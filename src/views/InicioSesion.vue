@@ -98,6 +98,10 @@
     if (!emailError.value && !passwordError.value) {
       console.log("Iniciando sesión con:", email.value, password.value);
       // Aquí puedes llamar a tu API para autenticar al usuario
+
+       // Guardar los datos del usuario en localStorage 
+        localStorage.setItem('userInfo', JSON.stringify({ email: email.value }));
+        localStorage.setItem('isLogged', JSON.stringify(true));
     }
   };
   </script>
