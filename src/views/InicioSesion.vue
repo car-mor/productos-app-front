@@ -72,6 +72,7 @@
   
   <script setup>
   import { ref } from "vue";
+  import axios from "axios";
   
   // Estado de los campos
   const email = ref("");
@@ -82,24 +83,50 @@
   const passwordError = ref("");
   
   // Función para manejar el envío del formulario
-  const handleSubmit = () => {
-    // Validaciones básicas
+const handleSubmit = async () => {
+  try {
+    // Reiniciar errores
     emailError.value = "";
     passwordError.value = "";
-  
+
+    // Validaciones básicas
     if (!email.value.includes("@")) {
       emailError.value = "Por favor ingresa un correo válido.";
+      return;
     }
     if (password.value.length < 6) {
       passwordError.value = "La contraseña debe tener al menos 6 caracteres.";
+      return;
     }
-  
-    // Si no hay errores, procede con la autenticación
-    if (!emailError.value && !passwordError.value) {
-      console.log("Iniciando sesión con:", email.value, password.value);
-      // Aquí puedes llamar a tu API para autenticar al usuario
+
+    // llamada al endpoint de login
+    const response = await axios.post('endponit api', {
+      email: email.value,
+      password: password.value
+    });
+
+    // Si la autenticación es exitosa
+    if (response.data) {
+      // guarda el objeto completo del usuario en localStorage
+      localStorage.setItem('userInfo', JSON.stringify(response.data.user));
+      localStorage.setItem('isLogged', 'true');
+
+      // redireccion a la pantalla usuario o homepage
+      // router.push('/dashboard'); // Necesitarás importar el router
     }
-  };
+  } catch (error) {
+    // Manejar errores de la API
+    if (error.response) {
+      // Error con respuesta del servidor
+      const errorMessage = error.response.data.message || 'Error al iniciar sesión';
+      emailError.value = errorMessage;
+    } else {
+      // Error de red u otro tipo
+      emailError.value = 'Error de conexión. Por favor, intenta más tarde.';
+    }
+    console.error('Error durante el login:', error);
+  }
+};
   </script>
   
   <style scoped>

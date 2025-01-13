@@ -9,7 +9,23 @@
           <ul class="nav-menu">
             <li><a href="#" class="nav-link">Inicio</a></li>
             <li><a href="#" class="nav-link">Productos</a></li>
-            <li><a href="#" class="nav-link">Ofertas</a></li>
+
+            <!-- Menú desplegable de categorías -->
+            <li class="dropdown">
+            <a href="#" class="nav-link" @click.prevent="toggleDropdown">
+              Categorías <span :class="['arrow', { open: isDropdownOpen }]">↓</span>
+            </a>
+            <ul v-if="isDropdownOpen" class="dropdown-menu">
+              <li v-if="categories.length === 0" class="dropdown-item empty-state">
+                No hay categorías disponibles
+              </li>
+              <li v-else v-for="category in categories" :key="category.id">
+                <a :href="'/categorias/' + category.id" class="dropdown-item">
+                  {{ category.name }}
+                </a>
+              </li>
+            </ul>
+          </li>
             <li><a href="#" class="nav-link">Contacto</a></li>
           </ul>
         </nav>
@@ -43,12 +59,65 @@
   </template>
   
   <script setup>
-  import { ref } from 'vue'
+  import { ref, onMounted } from 'vue'
   import { SearchIcon, ShoppingCartIcon, UserIcon } from 'lucide-vue-next'
+  //para categorias
+  import axios from 'axios' // Usamos axios para las solicitudes HTTP
   
   const searchQuery = ref('')
   const cartItemsCount = ref(0)
+  //para categorías
+  const isDropdownOpen = ref(false) // Estado del menú desplegable
+  const categories = ref([]) // Lista de categorías
+
+  // Función para abrir o cerrar el menú desplegable CATEGORÍAS desde el back
+  // Alternar el menú desplegable
+const toggleDropdown = () => {
+  isDropdownOpen.value = !isDropdownOpen.value;
+  console.log('Estado del dropdown:', isDropdownOpen.value); // Debug para verificar el cambio
+}
+
+//datos estaticos para la prueba de categorías
+/*const categories = ref([
+  { id: 1, name: 'Electrodomésticos' },
+  { id: 2, name: 'Móviles y Tablets' },
+  { id: 3, name: 'Audio y Video' },
+])*/
+
+// Cargar categorías desde el backend
+const fetchCategories = async () => {
+  try {
+    const response = await axios.get('/api/categorias') // Cambia esta URL según tu backend
+    categories.value = response.data
+  } catch (error) {
+    console.error('Error al cargar las categorías:', error)
+    categories.value = [] // Limpiar la lista de categorías en caso de error
+  }
+}
+
+
+// Llamar a fetchCategories al montar el componente
+onMounted(() => {
+
+  fetchCategories()
+
+  //datos estaticos para la prueba de categorías
+  /*categories.value = [
+    { id: 1, name: 'Electrodomésticos' },
+    { id: 2, name: 'Móviles y Tablets' },
+    { id: 3, name: 'Audio y Video' },
+  ]*/
+})
+
+//ejemplo de respuesta del backend (la URL de la api debe repsonder en este fomrmato)
+/*[
+  { "id": 1, "name": "Electrodomésticos" },
+  { "id": 2, "name": "Móviles y Tablets" },
+  { "id": 3, "name": "Audio y Video" }
+]*/
+
   </script>
+
   
   <style scoped>
   /* Estilos principales del header */
@@ -199,4 +268,54 @@
       justify-content: flex-end;
     }
   }
+  /* Estilo del menú desplegable */
+  .dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  padding: 0.5rem 0;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  list-style: none;
+  width: 200px;
+  margin-top: 0.5rem;
+  display: block; /* Asegura que el menú sea visible */
+}
+
+.dropdown-item {
+  padding: 0.5rem 1rem;
+  text-decoration: none;
+  color: #4b5563;
+  display: block;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.dropdown-item:hover {
+  background-color: #f3f4f6;
+  color: #2563eb;
+}
+
+.empty-state {
+  color: #9ca3af;
+  text-align: center;
+  font-style: italic;
+}
+
+.arrow {
+  display: inline-block;
+  margin-left: 0.25rem;
+  transition: transform 0.3s ease;
+}
+
+.arrow.open {
+  transform: rotate(180deg);
+}
   </style>
