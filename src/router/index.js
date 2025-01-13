@@ -8,6 +8,8 @@ import RegistroUsuario from "@/views/RegistroUsuario.vue";
 import ProveedorInfo from "@/views/ProveedorInfo.vue";
 import MetodoPago from "@/components/MetodoPago.vue";
 import PerfilUsuario from "@/views/PerfilUsuario.vue";
+import RealizarPagos from "@/components/RelizarPagos.vue";
+import Pedidos from "@/components/Pedidos.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -60,7 +62,17 @@ const router = createRouter({
       path: "/perfil-usuario",
       name: "PerfilUsuario",
       component: PerfilUsuario, // El componente que quieres mostrar
-    }   
+    },   
+    {
+      path: "/realizar-pago",
+      name: "RealizarPago",
+      component: RealizarPagos, // El componente que quieres mostrar
+    },
+    {
+      path: "/ver-pedidos",
+      name: "VerPedidos",
+      component: Pedidos, // El componente que quieres mostrar
+    } 
   ],
 });
 
