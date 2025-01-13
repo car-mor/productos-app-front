@@ -37,7 +37,7 @@ import DireccionesEnvio from "@/components/DireccionesEnvio.vue";
 import Pedidos from "@/components/Pedidos.vue";
 import DatosUsuario from "@/components/DatosUsuario.vue";
 import CambiarContraseña from "@/components/CambiarContraseña.vue";
-import { LockKeyholeIcon, HomeIcon, BaggageClaimIcon, UserCircle2 } from 'lucide-vue-next'; // Asegúrate de que el nombre y la ruta sean correctos
+import { LockKeyholeIcon, HomeIcon, BaggageClaimIcon, UserCircle2 } from 'lucide-vue-next';
 
 export default {
   name: "SidebarLayout",
