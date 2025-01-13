@@ -125,84 +125,87 @@
       </div>
   
       <!-- Modal para editar o agregar producto (actualizado con categoría y descrpción del producto) -->
-      <div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="productModalLabel">
-                {{ currentProduct.id ? 'Editar Producto' : 'Agregar Producto' }}
-              </h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      <ddiv class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="productModalLabel">
+          {{ currentProduct.id ? 'Editar Producto' : 'Agregar Producto' }}
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form @submit.prevent="saveProduct">
+        <div class="modal-body">
+          <!-- Primera fila -->
+          <div class="row mb-3">
+            <div class="col-md-4">
+              <label for="name" class="form-label">Nombre</label>
+              <input v-model="currentProduct.name" type="text" class="form-control" id="name" required />
             </div>
-            <form @submit.prevent="saveProduct">
-              <div class="modal-body">
-                <div class="row">
-                  <div class="col-md-6">
-                    <div class="mb-3">
-                      <label for="name" class="form-label">Nombre</label>
-                      <input v-model="currentProduct.name" type="text" class="form-control" id="name" required />
-                    </div>
-                    <div class="mb-3">
-                      <label for="name" class="form-label">Descripción</label>
-                      <input v-model="currentProduct.description" type="text" class="form-control" id="description" required />
-                    </div>
-                    <div class="mb-3">
-                      <label for="photo" class="form-label">Foto URL</label>
-                      <input v-model="currentProduct.photo" type="url" class="form-control" id="photo" required />
-                    </div>
-                    <div class="mb-3">
-                      <label for="provider" class="form-label">Proveedor</label>
-                      <select v-model="currentProduct.provider" class="form-select" id="provider" required>
-                        <option v-for="provider in providers" :key="provider.id" :value="provider.name">
-                          {{ provider.name }}
-                        </option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="mb-3">
-                      <label for="category" class="form-label">Categoría</label>
-                      <select v-model="currentProduct.category" class="form-select" id="category" required>
-                        <option v-for="category in categories" :key="category.id" :value="category.name">
-                          {{ category.name }}
-                        </option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="mb-3">
-                      <label for="price" class="form-label">Precio</label>
-                      <div class="input-group">
-                        <span class="input-group-text">$</span>
-                        <input v-model.number="currentProduct.price" type="number" class="form-control" id="price" required />
-                      </div>
-                    </div>
-                    <div class="mb-3">
-                      <label for="stock" class="form-label">Cantidad en Stock</label>
-                      <div class="input-group">
-                        <input v-model.number="currentProduct.stock" type="number" class="form-control" id="stock" required />
-                        <span class="input-group-text">unidades</span>
-                      </div>
-                    </div>
-                    <div class="mb-3">
-                      <label for="status" class="form-label">Estado</label>
-                      <select v-model="currentProduct.status" class="form-select" id="status" required>
-                        <option value="active">Activo</option>
-                        <option value="inactive">Inactivo</option>
-                        <option value="discontinued">Descontinuado</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
+            <div class="col-md-4">
+              <label for="photo" class="form-label">Foto URL</label>
+              <input v-model="currentProduct.photo" type="url" class="form-control" id="photo" required />
+            </div>
+            <div class="col-md-4">
+              <label for="description" class="form-label">Descripción</label>
+              <input v-model="currentProduct.description" type="text" class="form-control" id="description" required />
+            </div>
+          </div>
+
+          <!-- Segunda fila -->
+          <div class="row mb-3">
+            <div class="col-md-4">
+              <label for="provider" class="form-label">Proveedor</label>
+              <select v-model="currentProduct.provider" class="form-select" id="provider" required>
+                <option v-for="provider in providers" :key="provider.id" :value="provider.name">
+                  {{ provider.name }}
+                </option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label for="category" class="form-label">Categoría</label>
+              <select v-model="currentProduct.category" class="form-select" id="category" required>
+                <option v-for="category in categories" :key="category.id" :value="category.name">
+                  {{ category.name }}
+                </option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label for="status" class="form-label">Estado</label>
+              <select v-model="currentProduct.status" class="form-select" id="status" required>
+                <option value="active">Activo</option>
+                <option value="inactive">Inactivo</option>
+                <option value="discontinued">Descontinuado</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Tercera fila -->
+          <div class="row">
+            <div class="col-md-6">
+              <label for="price" class="form-label">Precio</label>
+              <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input v-model.number="currentProduct.price" type="number" class="form-control" id="price" required />
               </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="submit" class="btn btn-primary">Guardar</button>
+            </div>
+            <div class="col-md-6">
+              <label for="stock" class="form-label">Cantidad en Stock</label>
+              <div class="input-group">
+                <input v-model.number="currentProduct.stock" type="number" class="form-control" id="stock" required />
+                <span class="input-group-text">unidades</span>
               </div>
-            </form>
+            </div>
           </div>
         </div>
-      </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</ddiv>
   
 
       <!-- Modal para agregar categoría -->
