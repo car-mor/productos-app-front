@@ -7,10 +7,28 @@
       <!-- Menú de navegación -->
       <nav>
         <ul class="nav-menu">
-          <li><a href="#" class="nav-link">Inicio</a></li>
-          <li><a href="#" class="nav-link">Productos</a></li>
+          <li>
+            <router-link to="/" class="w-100 mt-4">
+              <a class="nav-link">Inicio</a>
+            </router-link>
+          </li>
+          <li>
+            <router-link to="/producto-cliente" class="w-100 mt-4">
+              <a class="nav-link">Productos</a>
+            </router-link>
+          </li>
           <li><a href="#" class="nav-link">Ofertas</a></li>
-          <li><a href="#" class="nav-link">Contacto</a></li>
+
+          <!-- Enlace para mostrar el contenido de contacto -->
+          <li>
+            <a 
+              href="#" 
+              class="nav-link" 
+              @click.prevent="toggleContactModal"
+            >
+              Contacto
+            </a>
+          </li>
         </ul>
       </nav>
 
@@ -30,13 +48,79 @@
       </div>
     </div>
   </header>
+
+  <!-- Modal de contacto convertido en dropdown debajo del enlace -->
+  <div 
+  v-if="showContactModal" 
+  class="contact-dropdown mt-3 shadow-lg border-0 p-4 w-50"
+>
+  <div class="modal-header bg-primary text-white border-0 rounded-top position-relative p-2">
+    <h5 class="modal-title d-flex align-items-center fw-bold mb-0">
+      <i class="bi bi-people-fill me-2"></i>
+      Información de Contacto
+    </h5>
+    <button 
+      type="button" 
+      class="btn-close btn-close-white position-absolute top-0 end-0 m-3" 
+      @click="toggleContactModal"
+      aria-label="Close"
+    ></button>
+  </div>
+
+  <div class="modal-body p-4">
+    <p class="text-muted mb-4">
+      A continuación, encontrarás los datos de las personas encargadas del proyecto. Si necesitas más información, no dudes en contactarnos.
+    </p>
+    <div class="row g-3">
+      <div 
+        class="col-md-6" 
+        v-for="(contact, index) in contacts" 
+        :key="index"
+      >
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body">
+            <h6 class="card-title fw-bold mb-2">
+              <i class="bi bi-person-fill text-primary me-2"></i>{{ contact.name }}
+            </h6>
+            <p class="card-text mb-1">
+              <i class="bi bi-envelope-fill text-secondary me-2"></i>{{ contact.email }}
+            </p>
+            <a 
+              :href="'mailto:' + contact.email" 
+              class="btn btn-sm btn-outline-primary mt-2"
+            >
+              <i class="bi bi-send"></i> Enviar Correo
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer bg-light">
+  </div>
+</div>
+
 </template>
 
 <script setup>
 import { ref } from "vue";
 import { ShoppingCartIcon, UserIcon } from "lucide-vue-next";
 
+// Datos para el carrito y contactos
 const cartItemsCount = ref(0);
+const contacts = ref([
+  { name: "Adriana Vanessa Trejo Reyes", email: "atrejor1601@alumno.ipn.mx" },
+  { name: "Carlos Moreno Hernandez", email: "cmorenoh2000@alumno.ipn.mx" },
+  { name: "Josué Montalbán Rojas", email: "jmontalbanr2000@alumno.ipn.mx" },
+  { name: "Gerardo Uriel Ortiz Ramírez", email: "gortizr2001@alumno.ipn.mx" },
+]);
+
+// Controlador para mostrar/ocultar el modal
+const showContactModal = ref(false);
+
+const toggleContactModal = () => {
+  showContactModal.value = !showContactModal.value;
+};
 </script>
 
 <style scoped>
@@ -87,7 +171,6 @@ const cartItemsCount = ref(0);
   color: #2563eb;
 }
 
-/* Grupo de acciones */
 .actions-group {
   display: flex;
   align-items: center;
@@ -133,14 +216,19 @@ const cartItemsCount = ref(0);
   justify-content: center;
 }
 
-/* Responsive para tabletas */
-@media (max-width: 1024px) {
-  .search-bar {
-    width: 200px;
-  }
+/* Dropdown del modal */
+.contact-dropdown {
+  position: absolute;
+  top: 60px; /* Ajusta la distancia según el espacio */
+  right: 0; /* Cambiar 'left' a 'right' para pegarlo a la derecha */
+  width: 50%; /* Si necesitas ajustarlo al 100%, cámbialo */
+  background-color: white;
+  border-radius: 5px;
+  z-index: 1000;
 }
 
-/* Responsive para móviles */
+
+/* Responsive */
 @media (max-width: 768px) {
   .header-container {
     flex-wrap: wrap;
