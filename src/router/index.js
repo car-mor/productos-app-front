@@ -1,15 +1,15 @@
 import { createRouter, createWebHistory } from "vue-router";
-import CarritoDeCompras from "@/components/CarritoDeCompras.vue";
-import ProductoCliente from "@/components/ProductoCliente.vue";
-import ProductosAdmin from "@/views/ProductosAdmin.vue";
-import HomeScreen from "@/views/HomeScreen.vue";
-import InicioSesion from "@/views/InicioSesion.vue";
-import RegistroUsuario from "@/views/RegistroUsuario.vue";
-import ProveedorInfo from "@/views/ProveedorInfo.vue";
-import MetodoPago from "@/components/MetodoPago.vue";
-import PerfilUsuario from "@/views/PerfilUsuario.vue";
-import RealizarPagos from "@/components/RelizarPagos.vue";
-import Pedidos from "@/components/Pedidos.vue";
+import CarritoDeCompras from "@/cart/CarritoDeCompras.vue";
+import ProductoCliente from "@/cart/ProductoCliente.vue";
+import ProductosAdmin from "@/admin/ProductosAdmin.vue";
+import HomeScreen from "@/cart/HomeScreen.vue";
+import InicioSesion from "@/auth/InicioSesion.vue";
+import RegistroUsuario from "@/auth/RegistroUsuario.vue";
+import ProveedorInfo from "@/admin/ProveedorInfo.vue";
+import MetodoPago from "@/cart/RelizarPagos.vue";
+import PerfilUsuario from "@/user/PerfilUsuario.vue";
+import RealizarPagos from "@/cart/RelizarPagos.vue";
+import Pedidos from "@/user/Pedidos.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -17,42 +17,42 @@ const router = createRouter({
     {
       path: "/",
       name: "HomeScreen",
-      component: HomeScreen, // El componente que quieres mostrar
+      component: HomeScreen, 
     },
     {
       path: "/inicio-sesion",
       name: "InicioSesion",
-      component: InicioSesion, // El componente que quieres mostrar
+      component: InicioSesion, 
     },
     {
       path: "/registro-usuario",
       name: "RegistroUsuario",
-      component: RegistroUsuario, // El componente que quieres mostrar
+      component: RegistroUsuario, 
     },
     {
       path: "/carrito-compras",
       name: "CarritoDeCompras",
-      component: CarritoDeCompras, // El componente que quieres mostrar
+      component: CarritoDeCompras, 
     },
     {
       path: "/producto-cliente",
       name: "ProductoCliente",
-      component: ProductoCliente, // El componente que quieres mostrar
+      component: ProductoCliente, 
     },
     {
       path: "/productos-admin",
       name: "ProductosAdmin",
-      component: ProductosAdmin, // El componente que quieres mostrar
+      component: ProductosAdmin, 
     },
     {
       path: "/proveedor-info",
       name: "ProveedorInfo",
-      component: ProveedorInfo, // El componente que quieres mostrar
+      component: ProveedorInfo, 
     },
     {
       path: "/metodo-pago",
       name: "MetodoPago",
-      component: MetodoPago, // El componente que quieres mostrar
+      component: MetodoPago, 
     },
     {
       path: "/:pathMatch(.*)*",
@@ -61,17 +61,17 @@ const router = createRouter({
     {
       path: "/perfil-usuario",
       name: "PerfilUsuario",
-      component: PerfilUsuario, // El componente que quieres mostrar
+      component: PerfilUsuario, 
     },   
     {
       path: "/realizar-pago",
       name: "RealizarPago",
-      component: RealizarPagos, // El componente que quieres mostrar
+      component: RealizarPagos, 
     },
     {
       path: "/ver-pedidos",
       name: "VerPedidos",
-      component: Pedidos, // El componente que quieres mostrar
+      component: Pedidos, 
     } 
   ],
 });

@@ -1,23 +1,35 @@
 <template>
   <div class="d-flex">
     <!-- Sidebar -->
-    <div class="bg-light p-3" style="width: 250px; height: 100vh;">
-      <div class="d-flex justify-content-center align-items-center mb-4" style="height: 120px;">
-  <img src="../assets/logoElectroShop.png" alt="Logo" class="img-fluid" style="max-height: 150px;">
-</div>
+    <div class="bg-light p-3" style="width: 250px; height: 100vh">
+      <div
+        class="d-flex justify-content-center align-items-center mb-4"
+        style="height: 120px"
+      >
+        <img
+          src="../assets/logoElectroShop.png"
+          alt="Logo"
+          class="img-fluid"
+          style="max-height: 150px"
+        />
+      </div>
       <h5 class="mb-4">Opciones</h5>
       <ul class="nav flex-column">
         <li class="nav-item" v-for="option in options" :key="option.view">
           <a
             href="#"
             class="nav-link d-flex align-items-center"
-            :class="{ 'text-primary': activeView === option.view, 'selected-option': activeView === option.view }"
+            :class="{
+              'text-primary': activeView === option.view,
+              'selected-option': activeView === option.view,
+            }"
             @click="setView(option.view)"
           >
             <span class="me-2" v-if="option.icon">
               <component :is="option.icon" />
             </span>
-            <span class="text-dark">{{ option.label }}</span> <!-- Texto en negro -->
+            <span class="text-dark">{{ option.label }}</span>
+            <!-- Texto en negro -->
           </a>
         </li>
       </ul>
@@ -33,11 +45,16 @@
 
 <script>
 import SecundaryHeader from "@/components/SecundaryHeader.vue";
-import DireccionesEnvio from "@/components/DireccionesEnvio.vue";
-import Pedidos from "@/components/Pedidos.vue";
-import DatosUsuario from "@/components/DatosUsuario.vue";
-import CambiarContraseña from "@/components/CambiarContraseña.vue";
-import { LockKeyholeIcon, HomeIcon, BaggageClaimIcon, UserCircle2 } from 'lucide-vue-next';
+import DireccionesEnvio from "@/user/DireccionesEnvio.vue";
+import Pedidos from "@/user/Pedidos.vue";
+import DatosUsuario from "@/user/DatosUsuario.vue";
+import CambiarContraseña from "@/auth/CambiarContraseña.vue";
+import {
+  LockKeyholeIcon,
+  HomeIcon,
+  BaggageClaimIcon,
+  UserCircle2,
+} from "lucide-vue-next";
 
 export default {
   name: "SidebarLayout",
@@ -56,10 +73,18 @@ export default {
     return {
       activeView: "DatosUsuario",
       options: [
-        { label: "Direcciones de envío", view: "DireccionesEnvio", icon: HomeIcon  },
+        {
+          label: "Direcciones de envío",
+          view: "DireccionesEnvio",
+          icon: HomeIcon,
+        },
         { label: "Mis pedidos", view: "Pedidos", icon: BaggageClaimIcon },
         { label: "General", view: "DatosUsuario", icon: UserCircle2 },
-        { label: "Cambiar contraseña", view: "CambiarContraseña", icon: LockKeyholeIcon },
+        {
+          label: "Cambiar contraseña",
+          view: "CambiarContraseña",
+          icon: LockKeyholeIcon,
+        },
       ],
     };
   },

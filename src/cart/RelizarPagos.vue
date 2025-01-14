@@ -2,7 +2,11 @@
   <div class="container mt-4">
     <h2 class="d-flex align-items-center justify-content-between mb-4">
       Finalizar la compra de manera segura
-      <img src="../assets/logoElectroShop.png" alt="Seguridad" style="max-height: 150px;" />
+      <img
+        src="../assets/logoElectroShop.png"
+        alt="Seguridad"
+        style="max-height: 150px"
+      />
     </h2>
 
     <!-- Información de envío -->
@@ -13,7 +17,8 @@
           <h5 class="card-title mb-0">Datos del envío</h5>
         </div>
         <p>
-          Enviar a: <strong>{{ shippingAddress.name }}</strong><br />
+          Enviar a: <strong>{{ shippingAddress.name }}</strong
+          ><br />
           {{ shippingAddress.address }}
         </p>
         <button class="btn btn-link p-0" @click="changeAddress">Cambiar</button>
@@ -33,7 +38,9 @@
           <form @submit.prevent="agregarTarjeta" class="mb-3">
             <div class="row g-3">
               <div class="col-md-6 position-relative">
-                <label for="numeroTarjeta" class="form-label">Número de tarjeta</label>
+                <label for="numeroTarjeta" class="form-label"
+                  >Número de tarjeta</label
+                >
                 <input
                   type="text"
                   id="numeroTarjeta"
@@ -44,15 +51,25 @@
                 />
                 <div
                   class="card-icons position-absolute mt-2"
-                  style="right: 10px; top: 50%; transform: translateY(-50%);"
+                  style="right: 10px; top: 50%; transform: translateY(-50%)"
                 >
-                  <img src="../assets/visa.png" alt="Visa" style="width: 30px; margin-right: 5px;" />
-                  <img src="../assets/mastercard.png" alt="MasterCard" style="width: 30px;" />
+                  <img
+                    src="../assets/visa.png"
+                    alt="Visa"
+                    style="width: 30px; margin-right: 5px"
+                  />
+                  <img
+                    src="../assets/mastercard.png"
+                    alt="MasterCard"
+                    style="width: 30px"
+                  />
                 </div>
               </div>
 
               <div class="col-md-3">
-                <label for="fechaVencimiento" class="form-label">Fecha de vencimiento</label>
+                <label for="fechaVencimiento" class="form-label"
+                  >Fecha de vencimiento</label
+                >
                 <input
                   type="text"
                   id="fechaVencimiento"
@@ -82,13 +99,20 @@
     <!-- Selección de país y checkboxes -->
     <div class="card mb-4">
       <div class="card-body">
-      <div class="mb-3 d-flex align-items-center">
-        <LucideInfo class="mx-2"/>
-        <h5 class="card-title">Información adicional</h5>
-      </div>
+        <div class="mb-3 d-flex align-items-center">
+          <LucideInfo class="mx-2" />
+          <h5 class="card-title">Información adicional</h5>
+        </div>
         <div class="mb-3">
-          <label for="pais" class="form-label">Selecciona tu país o región</label>
-          <select id="pais" class="form-select" v-model="paisSeleccionado" required>
+          <label for="pais" class="form-label"
+            >Selecciona tu país o región</label
+          >
+          <select
+            id="pais"
+            class="form-select"
+            v-model="paisSeleccionado"
+            required
+          >
             <option value="">Seleccione una opción</option>
             <option value="MX">México</option>
             <option value="US">Estados Unidos</option>
@@ -147,7 +171,12 @@
 
 <script>
 import { Modal } from "bootstrap";
-import { WalletCardsIcon, CarIcon, LucideDollarSign, LucideInfo } from "lucide-vue-next";
+import {
+  WalletCardsIcon,
+  CarIcon,
+  LucideDollarSign,
+  LucideInfo,
+} from "lucide-vue-next";
 export default {
   name: "Relizarpagos",
   components: {

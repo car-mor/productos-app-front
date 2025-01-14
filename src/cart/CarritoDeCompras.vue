@@ -54,7 +54,7 @@
                           @click="decreaseQuantity(item)"
                           :disabled="item.quantity <= 1"
                         >
-                        <i class="bi bi-dash"></i>
+                          <i class="bi bi-dash"></i>
                           <!-- Ícono de menos -->
                         </button>
                         <input
@@ -68,7 +68,7 @@
                           class="btn btn-sm btn-outline-secondary"
                           @click="increaseQuantity(item)"
                         >
-                        <i class="bi bi-plus"></i>
+                          <i class="bi bi-plus"></i>
                           <!-- Ícono de más -->
                         </button>
                       </div>
@@ -123,70 +123,80 @@
                     {{ cart.shippingAddress.country }}
                   </address>
                   <button
-  class="btn btn-sm btn-outline-primary mt-2"
-  @click="showAddressForm = true"
->
-  Cambiar dirección
-</button>
-<!-- Modal para editar dirección -->
-<template v-if="showAddressForm">
-  <div class="modal-overlay">
-    <div class="modal-content">
-      <h5>Editar Dirección</h5>
-      <form @submit.prevent="updateShippingAddress">
-        <div class="mb-3">
-          <label for="street" class="form-label">Calle</label>
-          <input
-            id="street"
-            type="text"
-            v-model="editAddress.street"
-            class="form-control"
-          />
-        </div>
-        <div class="mb-3">
-          <label for="city" class="form-label">Ciudad</label>
-          <input
-            id="city"
-            type="text"
-            v-model="editAddress.city"
-            class="form-control"
-          />
-        </div>
-        <div class="mb-3">
-          <label for="state" class="form-label">Estado</label>
-          <input
-            id="state"
-            type="text"
-            v-model="editAddress.state"
-            class="form-control"
-          />
-        </div>
-        <div class="mb-3">
-          <label for="zipCode" class="form-label">Código Postal</label>
-          <input
-            id="zipCode"
-            type="text"
-            v-model="editAddress.zipCode"
-            class="form-control"
-          />
-        </div>
-        <div class="mb-3">
-          <label for="country" class="form-label">País</label>
-          <input
-            id="country"
-            type="text"
-            v-model="editAddress.country"
-            class="form-control"
-          />
-        </div>
-        <div class="d-flex justify-content-end">
-          <button type="button" class="btn btn-secondary me-2" @click="showAddressForm = false">Cancelar</button>
-          <button type="submit" class="btn btn-primary">Guardar</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</template>
+                    class="btn btn-sm btn-outline-primary mt-2"
+                    @click="showAddressForm = true"
+                  >
+                    Cambiar dirección
+                  </button>
+                  <!-- Modal para editar dirección -->
+                  <template v-if="showAddressForm">
+                    <div class="modal-overlay">
+                      <div class="modal-content">
+                        <h5>Editar Dirección</h5>
+                        <form @submit.prevent="updateShippingAddress">
+                          <div class="mb-3">
+                            <label for="street" class="form-label">Calle</label>
+                            <input
+                              id="street"
+                              type="text"
+                              v-model="editAddress.street"
+                              class="form-control"
+                            />
+                          </div>
+                          <div class="mb-3">
+                            <label for="city" class="form-label">Ciudad</label>
+                            <input
+                              id="city"
+                              type="text"
+                              v-model="editAddress.city"
+                              class="form-control"
+                            />
+                          </div>
+                          <div class="mb-3">
+                            <label for="state" class="form-label">Estado</label>
+                            <input
+                              id="state"
+                              type="text"
+                              v-model="editAddress.state"
+                              class="form-control"
+                            />
+                          </div>
+                          <div class="mb-3">
+                            <label for="zipCode" class="form-label"
+                              >Código Postal</label
+                            >
+                            <input
+                              id="zipCode"
+                              type="text"
+                              v-model="editAddress.zipCode"
+                              class="form-control"
+                            />
+                          </div>
+                          <div class="mb-3">
+                            <label for="country" class="form-label">País</label>
+                            <input
+                              id="country"
+                              type="text"
+                              v-model="editAddress.country"
+                              class="form-control"
+                            />
+                          </div>
+                          <div class="d-flex justify-content-end">
+                            <button
+                              type="button"
+                              class="btn btn-secondary me-2"
+                              @click="showAddressForm = false"
+                            >
+                              Cancelar
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                              Guardar
+                            </button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </template>
                 </div>
 
                 <!-- Totales -->
@@ -206,21 +216,21 @@
                     <span>{{ formatPrice(cart.total) }}</span>
                   </div>
 
-                  <router-link
-  to="/metodo-pago"
-  class="w-100 mt-4"
->
-  <button
-    class="btn btn-primary w-100"
-    :disabled="!cart.items.length"
-  >
-    Proceder al Pago
-  </button>
-</router-link>
+                  <router-link to="/metodo-pago" class="w-100 mt-4">
+                    <button
+                      class="btn btn-primary w-100"
+                      :disabled="!cart.items.length"
+                    >
+                      Proceder al Pago
+                    </button>
+                  </router-link>
 
-                  <router-link to="/home-screen" class="btn btn-outline-secondary w-100 mt-3">
-  Regresar a Inicio
-</router-link>
+                  <router-link
+                    to="/home-screen"
+                    class="btn btn-outline-secondary w-100 mt-3"
+                  >
+                    Regresar a Inicio
+                  </router-link>
                 </div>
               </div>
             </div>
@@ -235,7 +245,6 @@
     </div>
   </div>
 </template>
-
 
 <script>
 import { defineComponent, ref, onMounted } from "vue";
@@ -383,7 +392,6 @@ export default defineComponent({
   },
 });
 </script>
-
 
 <style>
 .modal-overlay {

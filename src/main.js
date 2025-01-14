@@ -7,8 +7,8 @@ import 'bootstrap-icons/font/bootstrap-icons.css'
 import { createApp } from 'vue';
 import App from './App.vue';
 import router from './router';
+import './plugins';
 
-// Crea la instancia de la aplicación
 const app = createApp(App);
 
 // Configura el router
