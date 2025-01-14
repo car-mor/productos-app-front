@@ -241,7 +241,12 @@
 <script>
 import { Modal } from "bootstrap";
 import MainHeader from "@/components/MainHeader.vue";
-import { WalletCardsIcon, CarIcon, LucideDollarSign } from "lucide-vue-next";
+import {
+  WalletCardsIcon,
+  CarIcon,
+  LucideDollarSign,
+  LucideInfo,
+} from "lucide-vue-next";
 export default {
   name: "Relizarpagos",
   components: {
