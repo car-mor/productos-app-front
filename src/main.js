@@ -2,6 +2,7 @@
 import 'bootstrap/dist/css/bootstrap.min.css'; // CSS de Bootstrap
 import 'bootstrap'; // JavaScript de Bootstrap
 import 'bootstrap-icons/font/bootstrap-icons.css'
+import 'vue3-toastify/dist/index.css';
 // import '@fortawesome/fontawesome-free/css/all.min.css'; // Estilos de Font Awesome
 // Importa Vue y las configuraciones de tu proyecto
 import { createApp } from 'vue';
@@ -13,6 +14,5 @@ const app = createApp(App);
 
 // Configura el router
 app.use(router);
-
 // Monta la aplicación
 app.mount('#app');

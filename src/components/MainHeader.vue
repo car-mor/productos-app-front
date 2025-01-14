@@ -23,9 +23,9 @@
               >
                 No hay categorías disponibles
               </li>
-              <li v-else v-for="category in categories" :key="category.id">
+              <li v-else v-for="category in categories" :key="category.idCategoria">
                 <a :href="'/categorias/' + category.id" class="dropdown-item">
-                  {{ category.name }}
+                  {{ category.nombreCategoria }}
                 </a>
               </li>
             </ul>
@@ -65,58 +65,30 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { SearchIcon, ShoppingCartIcon, UserIcon } from "lucide-vue-next";
-//para categorias
-import axios from "axios"; // Usamos axios para las solicitudes HTTP
+import axios from "axios"; 
 
-const searchQuery = ref("");
-const cartItemsCount = ref(0);
-//para categorías
-const isDropdownOpen = ref(false); // Estado del menú desplegable
-const categories = ref([]); // Lista de categorías
-
-// Función para abrir o cerrar el menú desplegable CATEGORÍAS desde el back
-// Alternar el menú desplegable
+let searchQuery = ref("");
+let cartItemsCount = ref(0);
+let isDropdownOpen = ref(false);
+let categories = ref([]);
 const toggleDropdown = () => {
   isDropdownOpen.value = !isDropdownOpen.value;
-  console.log("Estado del dropdown:", isDropdownOpen.value); // Debug para verificar el cambio
+  console.log("Estado del dropdown:", isDropdownOpen.value);
 };
 
-//datos estaticos para la prueba de categorías
-/*const categories = ref([
-  { id: 1, name: 'Electrodomésticos' },
-  { id: 2, name: 'Móviles y Tablets' },
-  { id: 3, name: 'Audio y Video' },
-])*/
-
-// Cargar categorías desde el backend
 const fetchCategories = async () => {
   try {
-    const response = await axios.get("/api/categorias"); // Cambia esta URL según tu backend
+    const response = await axios.get("/api/v1/categorias");
     categories.value = response.data;
   } catch (error) {
     console.error("Error al cargar las categorías:", error);
-    categories.value = []; // Limpiar la lista de categorías en caso de error
+    categories.value = []; 
   }
 };
 
-// Llamar a fetchCategories al montar el componente
 onMounted(() => {
   fetchCategories();
-
-  //datos estaticos para la prueba de categorías
-  /*categories.value = [
-    { id: 1, name: 'Electrodomésticos' },
-    { id: 2, name: 'Móviles y Tablets' },
-    { id: 3, name: 'Audio y Video' },
-  ]*/
 });
-
-//ejemplo de respuesta del backend (la URL de la api debe repsonder en este fomrmato)
-/*[
-  { "id": 1, "name": "Electrodomésticos" },
-  { "id": 2, "name": "Móviles y Tablets" },
-  { "id": 3, "name": "Audio y Video" }
-]*/
 </script>
 
 <style scoped>

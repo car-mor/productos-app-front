@@ -1,2 +1,1 @@
-import './axios.js'
-import './vusax.js'
+import './axios';

@@ -66,76 +66,51 @@
             <th style="min-width: 150px">Categoría</th>
             <th style="min-width: 120px">Precio</th>
             <th style="min-width: 150px">Stock</th>
-            <th style="min-width: 150px">Estado</th>
             <th style="min-width: 200px">Acciones</th>
           </tr>
         </thead>
         <tbody>
           <tr
             v-for="product in products"
-            :key="product.id"
+            :key="product.idProducto"
             :class="{ 'table-danger': product.stock === 0 }"
           >
             <td class="text-center">
               <img
-                :src="product.photo"
+                :src="product.imagenUrl"
                 alt="Foto"
                 class="rounded"
                 style="width: 60px; height: 60px; object-fit: cover"
               />
             </td>
-            <td class="align-middle fw-semibold">{{ product.name }}</td>
-            <td class="align-middle">{{ product.description }}</td>
+            <td class="align-middle fw-semibold">{{ product.nombreProducto }}</td>
+            <td class="align-middle">{{ product.descripcionProducto }}</td>
             <td class="align-middle">
               <div class="d-flex align-items-center">
-                {{ product.provider }}
+                {{ product.proveedor.nombreProveedor }}
                 <button
                   class="btn btn-sm btn-outline-info ms-2"
                   data-bs-toggle="modal"
                   data-bs-target="#providerDetailsModal"
-                  @click="openProviderDetails(product.provider)"
+                  @click="openProviderDetails(product.proveedor.nombreProveedor)"
                   title="Ver detalles del proveedor"
                 >
                   <i class="bi bi-info-circle"></i>
                 </button>
               </div>
             </td>
-            <td class="align-middle">{{ product.category }}</td>
-            <td class="align-middle">${{ product.price.toLocaleString() }}</td>
+            <td class="align-middle">{{ product.categoria.nombreCategoria }}</td>
+            <td class="align-middle">${{ product.precioUnitario.toLocaleString() }}</td>
             <td class="align-middle">
               <div class="input-group">
                 <input
                   type="number"
                   class="form-control form-control-sm"
                   v-model.number="product.stock"
+                  readonly
                   @change="updateProductStock(product)"
                 />
                 <span class="input-group-text">unids.</span>
-              </div>
-            </td>
-            <td class="align-middle">
-              <div class="d-flex align-items-center">
-                <select
-                  class="form-select form-select-sm me-2"
-                  v-model="product.status"
-                  @change="updateProductStatus(product)"
-                >
-                  <option value="active">Activo</option>
-                  <option value="inactive">Inactivo</option>
-                  <option value="discontinued">Descontinuado</option>
-                </select>
-                <span
-                  class="badge"
-                  :class="{
-                    'bg-success':
-                      product.status === 'active' && product.stock > 0,
-                    'bg-warning': product.status === 'inactive',
-                    'bg-danger':
-                      product.status === 'discontinued' || product.stock === 0,
-                  }"
-                >
-                  {{ getStatusText(product) }}
-                </span>
               </div>
             </td>
             <td class="align-middle">
@@ -148,10 +123,7 @@
                 >
                   <i class="bi bi-pencil me-1"></i>Editar
                 </button>
-                <button
-                  class="btn btn-danger btn-sm"
-                  @click="confirmDelete(product)"
-                >
+                <button class="btn btn-danger btn-sm" @click="confirmDelete(product)">
                   <i class="bi bi-trash me-1"></i>Eliminar
                 </button>
               </div>
@@ -162,7 +134,7 @@
     </div>
 
     <!-- Modal para editar o agregar producto (actualizado con categoría y descrpción del producto) -->
-    <ddiv
+    <div
       class="modal fade"
       id="productModal"
       tabindex="-1"
@@ -173,7 +145,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="productModalLabel">
-              {{ currentProduct.id ? "Editar Producto" : "Agregar Producto" }}
+              {{ currentProduct.idProducto ? "Editar Producto" : "Agregar Producto" }}
             </h5>
             <button
               type="button"
@@ -189,7 +161,7 @@
                 <div class="col-md-4">
                   <label for="name" class="form-label">Nombre</label>
                   <input
-                    v-model="currentProduct.name"
+                    v-model="currentProduct.nombreProducto"
                     type="text"
                     class="form-control"
                     id="name"
@@ -199,7 +171,7 @@
                 <div class="col-md-4">
                   <label for="photo" class="form-label">Foto URL</label>
                   <input
-                    v-model="currentProduct.photo"
+                    v-model="currentProduct.imagenUrl"
                     type="url"
                     class="form-control"
                     id="photo"
@@ -207,11 +179,9 @@
                   />
                 </div>
                 <div class="col-md-4">
-                  <label for="description" class="form-label"
-                    >Descripción</label
-                  >
+                  <label for="description" class="form-label">Descripción</label>
                   <input
-                    v-model="currentProduct.description"
+                    v-model="currentProduct.descripcionProducto"
                     type="text"
                     class="form-control"
                     id="description"
@@ -225,48 +195,47 @@
                 <div class="col-md-4">
                   <label for="provider" class="form-label">Proveedor</label>
                   <select
-                    v-model="currentProduct.provider"
+                    v-model="currentProduct.proveedor"
                     class="form-select"
                     id="provider"
                     required
                   >
                     <option
                       v-for="provider in providers"
-                      :key="provider.id"
-                      :value="provider.name"
+                      :key="provider.idProveedor"
+                      :value="provider.idProveedor"
                     >
-                      {{ provider.name }}
+                      {{ provider.nombreProveedor }}
                     </option>
                   </select>
                 </div>
                 <div class="col-md-4">
                   <label for="category" class="form-label">Categoría</label>
                   <select
-                    v-model="currentProduct.category"
+                    v-model="currentProduct.categoria"
                     class="form-select"
                     id="category"
                     required
                   >
                     <option
                       v-for="category in categories"
-                      :key="category.id"
-                      :value="category.name"
+                      :key="category.idCategoria"
+                      :value="category.idCategoria"
                     >
-                      {{ category.name }}
+                      {{ category.nombreCategoria }}
                     </option>
                   </select>
                 </div>
                 <div class="col-md-4">
                   <label for="status" class="form-label">Estado</label>
                   <select
-                    v-model="currentProduct.status"
+                    v-model="currentProduct.activo"
                     class="form-select"
                     id="status"
                     required
                   >
-                    <option value="active">Activo</option>
-                    <option value="inactive">Inactivo</option>
-                    <option value="discontinued">Descontinuado</option>
+                    <option :value="true">Activo</option>
+                    <option :value="false">Inactivo</option>
                   </select>
                 </div>
               </div>
@@ -278,7 +247,7 @@
                   <div class="input-group">
                     <span class="input-group-text">$</span>
                     <input
-                      v-model.number="currentProduct.price"
+                      v-model.number="currentProduct.precioUnitario"
                       type="number"
                       class="form-control"
                       id="price"
@@ -287,9 +256,7 @@
                   </div>
                 </div>
                 <div class="col-md-6">
-                  <label for="stock" class="form-label"
-                    >Cantidad en Stock</label
-                  >
+                  <label for="stock" class="form-label">Cantidad en Stock</label>
                   <div class="input-group">
                     <input
                       v-model.number="currentProduct.stock"
@@ -304,11 +271,7 @@
               </div>
             </div>
             <div class="modal-footer">
-              <button
-                type="button"
-                class="btn btn-secondary"
-                data-bs-dismiss="modal"
-              >
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                 Cancelar
               </button>
               <button type="submit" class="btn btn-primary">Guardar</button>
@@ -316,7 +279,7 @@
           </form>
         </div>
       </div>
-    </ddiv>
+    </div>
 
     <!-- Modal para agregar categoría -->
     <div
@@ -329,9 +292,7 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="categoryModalLabel">
-              Agregar Categoría
-            </h5>
+            <h5 class="modal-title" id="categoryModalLabel">Agregar Categoría</h5>
             <button
               type="button"
               class="btn-close"
@@ -342,11 +303,21 @@
           <form @submit.prevent="saveCategory">
             <div class="modal-body">
               <div class="mb-3">
-                <label for="categoryName" class="form-label"
-                  >Nombre de la Categoría</label
-                >
+                <label for="categoryName" class="form-label">Nombre Categoría</label>
                 <input
-                  v-model="currentCategory.name"
+                  v-model="newCategory.nombreCategoria"
+                  type="text"
+                  class="form-control"
+                  id="categoryName"
+                  required
+                />
+              </div>
+            </div>
+            <div class="modal-body">
+              <div class="mb-3">
+                <label for="categoryName" class="form-label">Descripción Categoría</label>
+                <input
+                  v-model="newCategory.descripcionCategoria"
                   type="text"
                   class="form-control"
                   id="categoryName"
@@ -355,11 +326,7 @@
               </div>
             </div>
             <div class="modal-footer">
-              <button
-                type="button"
-                class="btn btn-secondary"
-                data-bs-dismiss="modal"
-              >
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                 Cancelar
               </button>
               <button type="submit" class="btn btn-primary">Guardar</button>
@@ -380,9 +347,7 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="providerModalLabel">
-              Agregar Proveedor
-            </h5>
+            <h5 class="modal-title" id="providerModalLabel">Agregar Proveedor</h5>
             <button
               type="button"
               class="btn-close"
@@ -395,7 +360,7 @@
               <div class="mb-3">
                 <label for="newProviderName" class="form-label">Nombre</label>
                 <input
-                  v-model="newProvider.name"
+                  v-model="newProvider.nombreProveedor"
                   type="text"
                   class="form-control"
                   id="newProviderName"
@@ -403,11 +368,9 @@
                 />
               </div>
               <div class="mb-3">
-                <label for="newProviderPhone" class="form-label"
-                  >Teléfono</label
-                >
+                <label for="newProviderPhone" class="form-label">Teléfono</label>
                 <input
-                  v-model="newProvider.phone"
+                  v-model="newProvider.telefono"
                   type="text"
                   class="form-control"
                   id="newProviderPhone"
@@ -417,7 +380,7 @@
               <div class="mb-3">
                 <label for="newProviderUrl" class="form-label">URL</label>
                 <input
-                  v-model="newProvider.url"
+                  v-model="newProvider.urlProveedor"
                   type="url"
                   class="form-control"
                   id="newProviderUrl"
@@ -426,14 +389,12 @@
               </div>
             </div>
             <div class="modal-footer">
-              <button
-                type="button"
-                class="btn btn-secondary"
-                data-bs-dismiss="modal"
-              >
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                 Cancelar
               </button>
-              <button type="submit" class="btn btn-primary">Guardar</button>
+              <button type="submit" class="btn btn-primary">
+                Guardar
+              </button>
             </div>
           </form>
         </div>
@@ -464,17 +425,17 @@
           <div class="modal-body">
             <div class="mb-3">
               <label class="form-label fw-bold">Nombre:</label>
-              <p>{{ selectedProvider.name }}</p>
+              <p>{{ selectedProvider.nombreProveedor }}</p>
             </div>
             <div class="mb-3">
               <label class="form-label fw-bold">Teléfono:</label>
-              <p>{{ selectedProvider.phone }}</p>
+              <p>{{ selectedProvider.telefono }}</p>
             </div>
             <div class="mb-3">
               <label class="form-label fw-bold">URL:</label>
               <p>
-                <a :href="selectedProvider.url" target="_blank">{{
-                  selectedProvider.url
+                <a :href="selectedProvider.urlProveedor" target="_blank">{{
+                  selectedProvider.urlProveedor
                 }}</a>
               </p>
             </div>
@@ -483,19 +444,15 @@
               <p>
                 <span
                   class="badge"
-                  :class="selectedProvider.active ? 'bg-success' : 'bg-danger'"
+                  :class="selectedProvider.activo ? 'bg-success' : 'bg-danger'"
                 >
-                  {{ selectedProvider.active ? "Activo" : "Inactivo" }}
+                  {{ selectedProvider.activo ? "Activo" : "Inactivo" }}
                 </span>
               </p>
             </div>
           </div>
           <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
               Cerrar
             </button>
           </div>
@@ -506,112 +463,88 @@
 </template>
 
 <script>
+import axios from "axios";
+import { toast } from "vue3-toastify";
 export default {
   data() {
     return {
       notifications: [],
-      products: [
-        {
-          id: 1,
-          name: "Producto 1",
-          description: "Descripción del producto 1",
-          photo:
-            "https://images.pexels.com/photos/30147974/pexels-photo-30147974/free-photo-of-iced-coffee-with-biscuit-topping-on-wooden-table.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-          provider: "Proveedor 1",
-          category: "Categoría 1",
-          price: 100,
-          stock: 10,
-          status: "active",
-        },
-        {
-          id: 2,
-          name: "Producto 2",
-          description: "Descripción del producto 2",
-          photo:
-            "https://images.pexels.com/photos/5195399/pexels-photo-5195399.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-          provider: "Proveedor 2",
-          category: "Categoría 2",
-          price: 200,
-          stock: 0,
-          status: "inactive",
-        },
-        {
-          id: 3,
-          name: "Producto 3",
-          description: "Descripción del producto 3",
-          photo:
-            "https://images.pexels.com/photos/21701368/pexels-photo-21701368/free-photo-of-cup-of-tea-and-candle-on-table.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=10",
-          provider: "Proveedor 2",
-          category: "Categoría 2",
-          price: 200,
-          stock: 20,
-          status: "active",
-        },
-        {
-          id: 4,
-          name: "Producto 4",
-          description: "Descripción del producto 4",
-          photo:
-            "https://images.pexels.com/photos/28907971/pexels-photo-28907971/free-photo-of-refreshing-iced-drinks-in-cafe-setting.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-          provider: "Proveedor 2",
-          category: "Categoría 2",
-          price: 200,
-          stock: 10,
-          status: "active",
-        },
-      ],
-      providers: [
-        {
-          id: 1,
-          name: "Proveedor 1",
-          phone: "123456789",
-          url: "https://proveedor1.com",
-          active: true,
-        },
-        {
-          id: 2,
-          name: "Proveedor 2",
-          phone: "987654321",
-          url: "https://proveedor2.com",
-          active: true,
-        },
-      ],
-      categories: [
-        { id: 1, name: "Categoría 1" },
-        { id: 2, name: "Categoría 2" },
-      ],
+      products: [],
+      providers: [],
+      categories: [],
       currentProduct: {
         id: null,
         name: "",
         description: "",
         photo: "",
         provider: "",
-        ategory: "",
+        category: "",
         price: 0,
         stock: 0,
         status: "active",
       },
-      currentCategory: {
-        id: null,
-        name: "",
+      newCategory: {
+        nombreCategoria: "",
+        descripcionCategoria: "",
       },
       newProvider: {
-        id: null,
-        name: "",
-        phone: "",
-        url: "",
+        nombreProveedor: "",
+        telefono: "",
+        urlProveedor: "",
         active: true,
       },
       selectedProvider: {
-        id: null,
-        name: "",
-        phone: "",
-        url: "",
-        active: false,
+        idProveedor: null,
+        nombreProveedor: "",
+        telefono: "",
+        urlProveedor: "",
+        activo: false,
       },
     };
   },
+  created() {
+    this.fetchProducts();
+    this.fetchCategories();
+    this.fetchProviders();
+  },
   methods: {
+    async fetchProducts() {
+      try {
+        const response = await axios.get("/api/v1/productos");
+        const products = response.data;
+        this.products = [...products];
+        console.log(this.products);
+      } catch (error) {
+        if (error.response) {
+          let messageError = error.response.data.message;
+          toast(messageError, {
+            hideProgressBar: true,
+            autoClose: 1500,
+            type: "error",
+            theme: "colored",
+          });
+        }
+      }
+    },
+    async fetchCategories() {
+      try {
+        const response = await axios.get("/api/v1/categorias");
+        this.categories = response.data;
+      } catch (error) {
+        console.error("Error al cargar las categorías:", error);
+        this.categories = [];
+      }
+    },
+    async fetchProviders() {
+      try {
+        const response = await axios.get("/api/v1/proveedores");
+        this.providers = response.data;
+        console.log(this.providers);
+      } catch (error) {
+        console.error("Error al cargar los proveedores:", error);
+        this.providers = [];
+      }
+    },
     openAddProductModal() {
       this.currentProduct = {
         id: null,
@@ -626,61 +559,86 @@ export default {
       };
     },
     openAddCategoryModal() {
-      this.currentCategory = {
-        id: null,
-        name: "",
-      };
+      this.newCategory = {};
     },
     openAddProviderModal() {
-      this.newProvider = {
-        id: null,
-        name: "",
-        phone: "",
-        url: "",
-        active: true,
-      };
+      this.newProvider = {};
     },
-    saveCategory() {
-      if (this.currentCategory.id) {
-        const index = this.categories.findIndex(
-          (c) => c.id === this.currentCategory.id
-        );
-        this.categories[index] = { ...this.currentCategory };
-      } else {
-        this.currentCategory.id = Date.now();
-        this.categories.push({ ...this.currentCategory });
-      }
-      // Mostrar notificación
-      this.showNotification("Categoría guardada exitosamente");
-      // Cerrar el modal
+    async saveCategory() {
       const modal = document.getElementById("categoryModal");
       const modalInstance = bootstrap.Modal.getInstance(modal);
-      modalInstance.hide();
+      const proxy = new Proxy(this.newCategory, {
+        get(target, prop) {
+          if (prop === "getOriginal") {
+            return () => JSON.parse(JSON.stringify(target)); // Deserializa para eliminar el Proxy
+          }
+          return prop in target ? target[prop] : undefined;
+        },
+      });
+      try {
+        const response = await axios.post("/api/v1/categorias", proxy.getOriginal());
+        if (response) {
+          toast("Categoría guardada correctamente", {
+            hideProgressBar: true,
+            autoClose: 1500,
+            type: "success",
+            theme: "colored",
+          });
+          this.fetchCategories();
+          modalInstance.hide();
+        }
+      } catch (error) {
+        if (error.response) {
+          let messageError = error.response.data.message;
+          toast(messageError, {
+            hideProgressBar: true,
+            autoClose: 1500,
+            type: "error",
+            theme: "colored",
+          });
+        }
+      }
     },
-    saveNewProvider() {
-      this.newProvider.id = Date.now();
-      this.providers.push({ ...this.newProvider });
-      // Mostrar notificación
-      this.showNotification("Proveedor guardado exitosamente");
-      // Cerrar el modal
+    async saveNewProvider() {
       const modal = document.getElementById("providerModal");
       const modalInstance = bootstrap.Modal.getInstance(modal);
-      modalInstance.hide();
+      const proxy = new Proxy(this.newProvider, {
+        get(target, prop) {
+          if (prop === "getOriginal") {
+            return () => JSON.parse(JSON.stringify(target)); // Deserializa para eliminar el Proxy
+          }
+          return prop in target ? target[prop] : undefined;
+        },
+      });
+      try {
+        const response = await axios.post("/api/v1/proveedores", proxy.getOriginal());
+        if (response) {
+          toast("Proveedor guardado correctamente", {
+            hideProgressBar: true,
+            autoClose: 1500,
+            type: "success",
+            theme: "colored",
+          });
+          this.fetchProviders();
+          modalInstance.hide();
+        }
+      } catch (error) {
+        if (error.response) {
+          let messageError = error.response.data.message;
+          toast(messageError, {
+            hideProgressBar: true,
+            autoClose: 1500,
+            type: "error",
+            theme: "colored",
+          });
+        }
+      }
     },
     openEditProductModal(product) {
       this.currentProduct = { ...product };
     },
     saveProduct() {
-      if (this.currentProduct.id) {
-        const index = this.products.findIndex(
-          (p) => p.id === this.currentProduct.id
-        );
-        this.products[index] = { ...this.currentProduct };
-      } else {
-        this.currentProduct.id = Date.now();
-        this.products.push({ ...this.currentProduct });
-      }
-      // Cerrar el modal después de guardar
+      console.log(this.currentProduct);
       const modal = document.getElementById("productModal");
       const modalInstance = bootstrap.Modal.getInstance(modal);
       modalInstance.hide();
@@ -694,7 +652,9 @@ export default {
       this.products = this.products.filter((p) => p.id !== id);
     },
     openProviderDetails(providerName) {
-      const provider = this.providers.find((p) => p.name === providerName);
+      console.log(providerName);
+      console.log(this.providers);
+      const provider = this.providers.find((p) => p.nombreProveedor === providerName);
       if (provider) {
         this.selectedProvider = { ...provider };
       }
@@ -702,25 +662,6 @@ export default {
     updateProductStock(product) {
       // Asegurarse de que el stock no sea negativo
       if (product.stock < 0) product.stock = 0;
-    },
-    updateProductStatus(product) {
-      // Aquí puedes agregar lógica adicional cuando se actualiza el estado
-      console.log(
-        `Estado del producto ${product.name} actualizado a: ${product.status}`
-      );
-    },
-    getStatusText(product) {
-      if (product.stock === 0) return "Agotado";
-      switch (product.status) {
-        case "active":
-          return "Disponible";
-        case "inactive":
-          return "Inactivo";
-        case "discontinued":
-          return "Descontinuado";
-        default:
-          return "Desconocido";
-      }
     },
 
     // Método para mostrar una notificación
