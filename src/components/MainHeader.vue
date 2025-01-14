@@ -1,10 +1,8 @@
 <template>
   <header class="header">
     <div class="header-container">
-      <!-- Logo -->
       <h1 class="logo">ElectroShop</h1>
 
-      <!-- Menú de navegación -->
       <nav>
         <ul class="nav-menu">
           <li><a href="#" class="nav-link">Inicio</a></li>
@@ -34,22 +32,33 @@
         </ul>
       </nav>
 
-      <!-- Grupo de búsqueda y acciones -->
       <div class="actions-group">
-        <!-- Barra de búsqueda -->
-        <div class="search-bar">
-          <input
-            type="text"
-            placeholder="Buscar electrodomésticos..."
-            v-model="searchQuery"
-          />
-          <SearchIcon class="search-icon" />
-        </div>
+        <div class="search-bar" v-if="isSearchBarEnabled">
+  <input 
+    type="text" 
+    placeholder="Buscar electrodomésticos..." 
+    v-model="searchQuery" 
+    :disabled="!isSearchBarEnabled" />
+  <SearchIcon class="search-icon" />
+</div>
 
+
+        <!-- UserIcon con menú condicional -->
         <div class="user-actions">
-          <router-link to="/inicio-sesion" class="icon-button">
+          <div class="icon-button" @click="toggleUserMenu">
             <UserIcon />
-          </router-link>
+          </div>
+          <ul v-if="isUserMenuOpen" class="dropdown-menu">
+            <li v-if="isLogged">
+              <router-link to="/perfil-usuario" class="dropdown-item">Mi Perfil</router-link>
+            </li>
+            <li v-if="isLogged">
+              <router-link to="/perfil-usuario" class="dropdown-item" @click="logout">Cerrar Sesión</router-link>
+            </li>
+            <li v-else>
+              <router-link to="/inicio-sesion" class="dropdown-item">Iniciar Sesión</router-link>
+            </li>
+          </ul>
           <RouterLink to="/carrito-compras">
             <button class="icon-button cart-button">
               <ShoppingCartIcon />
@@ -61,6 +70,7 @@
     </div>
   </header>
 </template>
+
 
 <script setup>
 import { ref, onMounted } from "vue";
@@ -90,6 +100,7 @@ onMounted(() => {
   fetchCategories();
 });
 </script>
+
 
 <style scoped>
 /* Estilos principales del header */
@@ -247,9 +258,9 @@ onMounted(() => {
 }
 
 .dropdown-menu {
-  position: absolute;
-  top: 100%;
-  left: 0;
+  position: fixed;
+  top: 4rem;
+  right: 4rem;
   background-color: white;
   border: 1px solid #e5e7eb;
   border-radius: 0.5rem;
@@ -267,6 +278,8 @@ onMounted(() => {
   text-decoration: none;
   color: #4b5563;
   display: block;
+  border-radius: 0.25rem;
+  cursor: pointer;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
