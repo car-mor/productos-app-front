@@ -1,5 +1,6 @@
 <template>
   <div class="container mt-4">
+    <MainHeader/>
     <h2 class="d-flex align-items-center justify-content-between mb-4">
       Finalizar la compra de manera segura
       <img src="../assets/logoElectroShop.png" alt="Seguridad" style="max-height: 150px;" />
@@ -239,13 +240,21 @@
 
 <script>
 import { Modal } from "bootstrap";
-import { WalletCardsIcon, CarIcon, LucideDollarSign } from "lucide-vue-next";
+import MainHeader from "@/components/MainHeader.vue";
+import {
+  WalletCardsIcon,
+  CarIcon,
+  LucideDollarSign,
+  LucideInfo,
+} from "lucide-vue-next";
 export default {
   name: "Relizarpagos",
   components: {
     WalletCardsIcon,
     CarIcon,
     LucideDollarSign,
+    LucideInfo,
+    MainHeader,
   },
   data() {
     return {
