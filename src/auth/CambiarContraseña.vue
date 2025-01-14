@@ -7,7 +7,9 @@
             <h3 class="text-center text-dark mb-4">Cambiar Contraseña</h3>
             <form @submit.prevent="submitForm">
               <div class="mb-3">
-                <label for="currentPassword" class="form-label">Contraseña Actual</label>
+                <label for="currentPassword" class="form-label"
+                  >Contraseña Actual</label
+                >
                 <input
                   type="password"
                   class="form-control"
@@ -18,7 +20,9 @@
                 />
               </div>
               <div class="mb-3">
-                <label for="newPassword" class="form-label">Nueva Contraseña</label>
+                <label for="newPassword" class="form-label"
+                  >Nueva Contraseña</label
+                >
                 <input
                   type="password"
                   class="form-control"
@@ -29,7 +33,9 @@
                 />
               </div>
               <div class="mb-3">
-                <label for="confirmNewPassword" class="form-label">Confirmar Nueva Contraseña</label>
+                <label for="confirmNewPassword" class="form-label"
+                  >Confirmar Nueva Contraseña</label
+                >
                 <input
                   type="password"
                   class="form-control"
@@ -39,7 +45,9 @@
                   placeholder="Confirma tu nueva contraseña"
                 />
               </div>
-              <button type="submit" class="btn btn-primary w-100 py-2 mt-3">Cambiar Contraseña</button>
+              <button type="submit" class="btn btn-primary w-100 py-2 mt-3">
+                Cambiar Contraseña
+              </button>
             </form>
           </div>
         </div>
@@ -78,7 +86,7 @@ export default {
   border-radius: 1rem;
 }
 h3 {
-  font-family: 'Arial', sans-serif;
+  font-family: "Arial", sans-serif;
   font-weight: 600;
 }
 input.form-control {

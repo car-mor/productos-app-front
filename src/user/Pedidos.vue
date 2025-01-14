@@ -1,6 +1,8 @@
 <template>
   <div class="container py-4">
-    <h1 class="d-flex align-items-center justify-content-between mb-4">Mis Pedidos</h1>
+    <h1 class="d-flex align-items-center justify-content-between mb-4">
+      Mis Pedidos
+    </h1>
     <div class="card mb-3" v-for="pedido in pedidos" :key="pedido.folio">
       <div class="card-header d-flex justify-content-between">
         <p><strong>Folio:</strong> {{ pedido.folio }}</p>
@@ -23,7 +25,10 @@
             </p>
           </div>
           <div class="col-12">
-            <p><strong>Dirección de Envío:</strong> {{ pedido.direccionEnvio || 'No especificada' }}</p>
+            <p>
+              <strong>Dirección de Envío:</strong>
+              {{ pedido.direccionEnvio || "No especificada" }}
+            </p>
           </div>
         </div>
       </div>
@@ -37,31 +42,31 @@ export default {
     return {
       pedidos: [
         {
-          folio: '0001',
-          cliente: 'Gerardo Ortiz',
-          fecha: '2025-01-05',
-          tipoPago: 'Tarjeta de Crédito',
-          precioTotal: 1200.50,
-          estatus: 'Entregado',
-          direccionEnvio: 'Calle Ficticia 123, Ciudad',
+          folio: "0001",
+          cliente: "Gerardo Ortiz",
+          fecha: "2025-01-05",
+          tipoPago: "Tarjeta de Crédito",
+          precioTotal: 1200.5,
+          estatus: "Entregado",
+          direccionEnvio: "Calle Ficticia 123, Ciudad",
         },
         {
-          folio: '0002',
-          cliente: 'Gerardo Ortiz',
-          fecha: '2025-01-04',
-          tipoPago: 'Tarjeta de débito',
-          precioTotal: 800.00,
-          estatus: 'En Espera',
-          direccionEnvio: 'Avenida Imaginaria 456, Ciudad',
+          folio: "0002",
+          cliente: "Gerardo Ortiz",
+          fecha: "2025-01-04",
+          tipoPago: "Tarjeta de débito",
+          precioTotal: 800.0,
+          estatus: "En Espera",
+          direccionEnvio: "Avenida Imaginaria 456, Ciudad",
         },
         {
-          folio: '0003',
-          cliente: 'Gerardo Ortiz',
-          fecha: '2025-01-03',
-          tipoPago: 'Tarjeta de débito',
+          folio: "0003",
+          cliente: "Gerardo Ortiz",
+          fecha: "2025-01-03",
+          tipoPago: "Tarjeta de débito",
           precioTotal: 500.75,
-          estatus: 'Cancelado',
-          direccionEnvio: 'No disponible',
+          estatus: "Cancelado",
+          direccionEnvio: "No disponible",
         },
       ],
     };
@@ -69,14 +74,14 @@ export default {
   methods: {
     estatusClass(estatus) {
       switch (estatus.toLowerCase()) {
-        case 'cancelado':
-          return 'bg-danger text-white';
-        case 'en espera':
-          return 'bg-warning text-dark';
-        case 'entregado':
-          return 'bg-success text-white';
+        case "cancelado":
+          return "bg-danger text-white";
+        case "en espera":
+          return "bg-warning text-dark";
+        case "entregado":
+          return "bg-success text-white";
         default:
-          return '';
+          return "";
       }
     },
   },
