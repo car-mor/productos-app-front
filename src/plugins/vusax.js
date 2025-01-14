@@ -4,4 +4,4 @@
 
 // Vue.use(Vuesax, {
 //     //Opciones
-// })
+// }) 

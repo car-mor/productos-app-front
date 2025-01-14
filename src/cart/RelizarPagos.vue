@@ -1,5 +1,6 @@
 <template>
   <div class="container mt-4">
+    <MainHeader/>
     <h2 class="d-flex align-items-center justify-content-between mb-4">
       Finalizar la compra de manera segura
       <img
@@ -171,6 +172,7 @@
 
 <script>
 import { Modal } from "bootstrap";
+import MainHeader from "@/components/MainHeader.vue";
 import {
   WalletCardsIcon,
   CarIcon,
@@ -184,6 +186,7 @@ export default {
     CarIcon,
     LucideDollarSign,
     LucideInfo,
+    MainHeader,
   },
   data() {
     return {
