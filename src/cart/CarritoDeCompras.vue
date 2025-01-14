@@ -1,5 +1,6 @@
 <template>
   <div class="h-screen w-full flex flex-col md:flex-row bg-gray-100">
+    <MainHeader/>
     <div class="container py-4">
       <h2 class="mb-4">Carrito de Compras</h2>
 
@@ -116,84 +117,26 @@
                 <div class="mb-4">
                   <h6 class="mb-2">Dirección de Envío</h6>
                   <address class="mb-0" v-if="cart.shippingAddress">
-                    {{ cart.shippingAddress.street }}<br />
-                    {{ cart.shippingAddress.city }},
-                    {{ cart.shippingAddress.state }}<br />
-                    {{ cart.shippingAddress.zipCode }}<br />
-                    {{ cart.shippingAddress.country }}
                   </address>
                   <button
                     class="btn btn-sm btn-outline-primary mt-2"
                     @click="showAddressForm = true"
                   >
-                    Cambiar dirección
+                    Ver dirección
                   </button>
                   <!-- Modal para editar dirección -->
                   <template v-if="showAddressForm">
                     <div class="modal-overlay">
-                      <div class="modal-content">
-                        <h5>Editar Dirección</h5>
-                        <form @submit.prevent="updateShippingAddress">
+                      <div class="modal-content shadow bg-white">
+                        <h5>Dirección de entrega</h5>
                           <div class="mb-3">
-                            <label for="street" class="form-label">Calle</label>
-                            <input
-                              id="street"
-                              type="text"
-                              v-model="editAddress.street"
-                              class="form-control"
-                            />
-                          </div>
-                          <div class="mb-3">
-                            <label for="city" class="form-label">Ciudad</label>
-                            <input
-                              id="city"
-                              type="text"
-                              v-model="editAddress.city"
-                              class="form-control"
-                            />
-                          </div>
-                          <div class="mb-3">
-                            <label for="state" class="form-label">Estado</label>
-                            <input
-                              id="state"
-                              type="text"
-                              v-model="editAddress.state"
-                              class="form-control"
-                            />
-                          </div>
-                          <div class="mb-3">
-                            <label for="zipCode" class="form-label"
-                              >Código Postal</label
-                            >
-                            <input
-                              id="zipCode"
-                              type="text"
-                              v-model="editAddress.zipCode"
-                              class="form-control"
-                            />
-                          </div>
-                          <div class="mb-3">
-                            <label for="country" class="form-label">País</label>
-                            <input
-                              id="country"
-                              type="text"
-                              v-model="editAddress.country"
-                              class="form-control"
-                            />
+                            <label for="street" class="form-label">{{ editAddress.address }}</label>
                           </div>
                           <div class="d-flex justify-content-end">
-                            <button
-                              type="button"
-                              class="btn btn-secondary me-2"
-                              @click="showAddressForm = false"
-                            >
-                              Cancelar
-                            </button>
-                            <button type="submit" class="btn btn-primary">
-                              Guardar
+                            <button type="button" class="btn btn-primary" @click="showAddressForm = false">
+                              Cerrar
                             </button>
                           </div>
-                        </form>
                       </div>
                     </div>
                   </template>
@@ -248,6 +191,7 @@
 
 <script>
 import { defineComponent, ref, onMounted } from "vue";
+import MainHeader from "@/components/MainHeader.vue";
 // Datos de prueba
 const mockData = {
   items: [
@@ -277,11 +221,8 @@ const mockData = {
     },
   ],
   shippingAddress: {
-    street: "Av. Insurgentes Sur 1234",
-    city: "Ciudad de México",
-    state: "CDMX",
-    zipCode: "03100",
-    country: "México",
+    address: "Av. Insurgentes Sur 1234, Ciudad de México, CDMX, 03100, México",
+   
   },
   totalItems: 4,
   subtotal: 32499.97,
@@ -292,15 +233,15 @@ const mockData = {
 export default defineComponent({
   name: "ShoppingCart",
 
+  components: {
+    MainHeader, // Registro del componente
+  },
+
   setup() {
     const cart = ref({
       items: [],
       shippingAddress: {
-        street: "",
-        city: "",
-        state: "",
-        zipCode: "",
-        country: "",
+        address: "",
       },
       totalItems: 0,
       subtotal: 0,
@@ -321,12 +262,6 @@ export default defineComponent({
       } catch (error) {
         console.error("Error al cargar el carrito:", error);
       }
-    };
-
-    // Actualizar dirección de envío
-    const updateShippingAddress = () => {
-      cart.value.shippingAddress = { ...editAddress.value }; // Actualizamos los datos del carrito
-      showAddressForm.value = false; // Cerramos el modal
     };
 
     // Formatear precio
@@ -382,7 +317,6 @@ export default defineComponent({
       cart,
       showAddressForm,
       editAddress,
-      updateShippingAddress,
       formatPrice,
       increaseQuantity,
       decreaseQuantity,
