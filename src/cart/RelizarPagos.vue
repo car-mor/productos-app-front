@@ -1,6 +1,6 @@
 <template>
   <div class="container mt-4">
-    <MainHeader/>
+    <SecundaryHeader/>
     <h2 class="d-flex align-items-center justify-content-between mb-4">
       Finalizar la compra de manera segura
       <img src="../assets/logoElectroShop.png" alt="Seguridad" style="max-height: 150px;" />
@@ -247,6 +247,7 @@ import {
   LucideDollarSign,
   LucideInfo,
 } from "lucide-vue-next";
+import SecundaryHeader from "@/components/SecundaryHeader.vue";
 export default {
   name: "Relizarpagos",
   components: {
@@ -255,6 +256,7 @@ export default {
     LucideDollarSign,
     LucideInfo,
     MainHeader,
+    SecundaryHeader,
   },
   data() {
     return {
