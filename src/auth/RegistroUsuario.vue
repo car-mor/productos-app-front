@@ -5,7 +5,7 @@
       <img
         src="@/assets/logoElectroShop.png"
         alt="Imagen de registro"
-        style="width: 400px; height: auto"
+        class="img-fluid"
       />
     </div>
 
@@ -14,8 +14,8 @@
       <h2 class="form-title">Regístrate</h2>
       <form @submit.prevent="handleRegister">
         <!-- Campo de correo y nombre de usuario en la misma fila -->
-        <div class="row mb-2">
-          <div class="col-6">
+        <div class="row mb-3">
+          <div class="col-12 col-md-6">
             <div class="form-group">
               <label for="email">Correo Electrónico</label>
               <input
@@ -30,7 +30,7 @@
               <div v-if="emailError" class="invalid-feedback">{{ emailError }}</div>
             </div>
           </div>
-          <div class="col-6">
+          <div class="col-12 col-md-6">
             <div class="form-group">
               <label for="userName">Nombre de Usuario</label>
               <input
@@ -46,8 +46,8 @@
         </div>
 
         <!-- Campo de contraseña y confirmar contraseña en la misma fila -->
-        <div class="row mb-2">
-          <div class="col-6">
+        <div class="row mb-3">
+          <div class="col-12 col-md-6">
             <div class="form-group">
               <label for="password">Contraseña</label>
               <input
@@ -62,7 +62,7 @@
               <div v-if="passwordError" class="invalid-feedback">{{ passwordError }}</div>
             </div>
           </div>
-          <div class="col-6">
+          <div class="col-12 col-md-6">
             <div class="form-group">
               <label for="confirmPassword">Confirmar Contraseña</label>
               <input
@@ -80,8 +80,8 @@
         </div>
 
         <!-- Campo de nombre y apellidos en la misma fila -->
-        <div class="row mb-2">
-          <div class="col-6">
+        <div class="row mb-3">
+          <div class="col-12 col-md-6">
             <div class="form-group">
               <label for="nombre">Nombre</label>
               <input
@@ -96,7 +96,7 @@
               <div v-if="nombreError" class="invalid-feedback">{{ nombreError }}</div>
             </div>
           </div>
-          <div class="col-6">
+          <div class="col-12 col-md-6">
             <div class="form-group">
               <label for="apellidos">Apellidos</label>
               <input
@@ -112,8 +112,8 @@
         </div>
 
         <!-- Campo de teléfono y fecha de nacimiento en la misma fila -->
-        <div class="row mb-2">
-          <div class="col-6">
+        <div class="row mb-3">
+          <div class="col-12 col-md-6">
             <div class="form-group">
               <label for="telefono">Teléfono</label>
               <input
@@ -126,7 +126,7 @@
               />
             </div>
           </div>
-          <div class="col-6">
+          <div class="col-12 col-md-6">
             <div class="form-group">
               <label for="fechaNacimiento">Fecha de Nacimiento</label>
               <input
@@ -141,8 +141,8 @@
         </div>
 
         <!-- Campo de calle y colonia en la misma fila -->
-        <div class="row mb-2">
-          <div class="col-6">
+        <div class="row mb-3">
+          <div class="col-12 col-md-6">
             <div class="form-group">
               <label for="calle">Calle</label>
               <input
@@ -155,7 +155,7 @@
               />
             </div>
           </div>
-          <div class="col-6">
+          <div class="col-12 col-md-6">
             <div class="form-group">
               <label for="colonia">Colonia</label>
               <input
@@ -171,8 +171,8 @@
         </div>
 
         <!-- Campo de número y código postal en la misma fila -->
-        <div class="row mb-2">
-          <div class="col-6">
+        <div class="row mb-3">
+          <div class="col-12 col-md-6">
             <div class="form-group">
               <label for="numero">Número Interior</label>
               <input
@@ -185,7 +185,7 @@
               />
             </div>
           </div>
-          <div class="col-6">
+          <div class="col-12 col-md-6">
             <div class="form-group">
               <label for="codigoPostal">Código Postal</label>
               <input
@@ -219,7 +219,9 @@
 
 <script setup>
 import { ref } from "vue";
-
+import { useRouter } from 'vue-router';
+import axios from "axios";
+import { toast } from 'vue3-toastify'
 // Campos del formulario
 const email = ref("");
 const password = ref("");
@@ -240,8 +242,10 @@ const passwordError = ref("");
 const confirmPasswordError = ref("");
 const nombreError = ref("");
 
+const router = useRouter()
+
 // Función para manejar el registro
-const handleRegister = () => {
+const handleRegister = async () => {
   // Validaciones básicas
   emailError.value = email.value.includes("@") ? "" : "Correo no válido.";
   passwordError.value =
@@ -261,55 +265,114 @@ const handleRegister = () => {
     !confirmPasswordError.value &&
     !nombreError.value
   ) {
-    console.log({
-      email: email.value,
-      password: password.value,
-      userName: userName.value,
-      nombre: nombre.value,
-      apellidos: apellidos.value,
-      calle: calle.value,
-      colonia: colonia.value,
-      numero: numero.value,
-      codigoPostal: codigoPostal.value,
-      telefono: telefono.value,
-      fechaNacimiento: fechaNacimiento.value,
-      role: {
-        id: 2,
-      },
-    });
+    try {
+      const response = await axios.post('/api/v1/signup', {
+        email: email.value,
+        password: password.value,
+        userName: userName.value,
+        nombre: nombre.value,
+        apellidos: apellidos.value,
+        calle: calle.value,
+        colonia: colonia.value,
+        numero: numero.value,
+        codigoPostal: codigoPostal.value,
+        telefono: telefono.value,
+        fechaNacimiento: fechaNacimiento.value,
+        role: {
+          id: 2
+        },
+      }) 
+      if (response) {
+        toast("Registro exitoso", {
+          hideProgressBar: true,
+          autoClose: 600,
+          type: "success",
+          theme: "colored",
+          onClose: () => {
+            router.push({
+              name: 'Autenticacion',
+              query: { email: response.data.email }
+            })
+          },
+        })
+      }
+    } catch (error) {
+      if (error.response) {
+        let messageError = error.response.data.message
+        toast(messageError, {
+          hideProgressBar: true,
+          autoClose: 1500,
+          type: "error",
+          theme: "colored",
+        })
+      }
+    }
   }
 };
 </script>
 
 <style scoped>
-/* Estilos para reducir el tamaño y ajustarlo a una vista más compacta */
+/* Estilos para hacerlo responsivo */
 .register-container {
   display: flex;
-  flex-direction: row;
-  align-items: flex-start;
   justify-content: center;
+  align-items: center;
+  gap: 30px;
   padding: 20px;
+  flex-wrap: wrap;
+}
+
+.register-image {
+  max-width: 350px;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .register-form {
+  max-width: 800px;
   width: 100%;
-  max-width: 500px;
-  margin-top: 10px;
 }
 
 .row {
-  margin-bottom: 10px;
+  margin-bottom: 1.5rem;
 }
 
-.form-group {
-  margin-bottom: 0.5rem;
+.form-group label {
+  font-weight: normal;
 }
 
-.btn {
+.form-group input {
   padding: 10px;
 }
 
-.navigation-buttons {
-  margin-top: 10px;
+@media (max-width: 768px) {
+  .register-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .register-image {
+    margin-bottom: 20px;
+  }
+}
+
+.form-title {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.btn-outline-secondary {
+  text-align: center;
+}
+
+.w-100 {
+  width: 100%;
+}
+
+.invalid-feedback {
+  font-size: 0.9rem;
+  color: #dc3545;
 }
 </style>
