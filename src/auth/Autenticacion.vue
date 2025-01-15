@@ -1,13 +1,10 @@
 <template>
-    <div
-      class="container d-flex justify-content-center align-items-center vh-100"
-      style="background-image: url('/ruta/de/imagen.jpg'); background-size: cover; background-position: center;"
-    >
+    <div class="container d-flex justify-content-center align-items-center vh-100">
       <div class="card p-4 shadow card-custom">
         <h3 class="text-center mb-2">Validación de cuenta</h3>
         <div class="text-center">
-  <img src="../assets/logoElectroShop.png" alt="Seguridad" style="max-width: 300px;" />
-</div>
+            <img src="../assets/logoElectroShop.png" alt="Seguridad" style="max-width: 300px;" />
+        </div>
 
         <p class="text-muted text-center mb-4">
           Introduce el código de verificación que se envió al correo que registraste.
