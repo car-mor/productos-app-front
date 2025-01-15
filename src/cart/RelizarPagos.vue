@@ -220,6 +220,7 @@
 <script>
 import { Modal } from "bootstrap";
 import MainHeader from "@/components/MainHeader.vue";
+import axios from "axios";
 import {
   WalletCardsIcon,
   CarIcon,
@@ -295,9 +296,10 @@ export default {
         estatusPedido: 'Preparando',
       }
       try {
-        const response = await axios.post('/api/v1/pedidos', data,{
-          params: { idCliente: user.idCliente }
-        })
+        const response = await axios.post('/api/v1/pedidos/', data, {
+          params: { idCliente: this.user.idCliente }
+        });
+        console.log(response)
         this.showModal();
       } catch (error) {
         if (error.response) {
