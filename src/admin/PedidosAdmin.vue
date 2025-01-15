@@ -1,129 +1,115 @@
 <template>
-    <div class="container mt-5">
-      <h2>Historial de Pedidos</h2>
-      <div class="table-responsive">
-        <table class="table table-striped">
-          <thead>
-            <tr>
-              <th>ID Pedido</th>
-              <th>Cliente</th>
-              <th>Fecha de Pedido</th>
-              <th>Total</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="pedido in pedidos" :key="pedido.id">
-              <td>{{ pedido.id }}</td>
-              <td>{{ pedido.cliente }}</td>
-              <td>{{ pedido.fecha }}</td>
-              <td>{{ pedido.total | currency }}</td>
-              <td>
-                <button class="btn btn-info btn-sm" @click="verDetalles(pedido.id)">Ver detalles</button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-  
-      <!-- Modal de detalles del pedido -->
-      <div v-if="mostrarModal" class="custom-modal">
-        <div class="custom-modal-content">
-          <div class="custom-modal-header">
-            <h5>Detalles del Pedido</h5>
-            <button class="close-btn" @click="cerrarModal">X</button>
+  <div class="container mt-5">
+    <h2>Historial de Pedidos</h2>
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>ID Pedido</th>
+            <th>Cliente</th>
+            <th>Fecha de Pedido</th>
+            <th>Total</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="pedido in pedidos" :key="pedido.idPedido">
+            <td>{{ pedido.idPedido }}</td>
+            <td>{{ pedido.cliente.nombre }} {{ pedido.cliente.apellidos }}</td>
+            <td>{{ formatDate(pedido.fechaCompra) }}</td>
+            <td>{{ pedido.precioTotal | currency }}</td>
+            <td>
+              <button class="btn btn-info btn-sm" @click="verDetalles(pedido)">Ver detalles</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Modal de detalles del pedido -->
+    <div v-if="mostrarModal" class="custom-modal">
+      <div class="custom-modal-content">
+        <div class="custom-modal-header">
+          <h5>Detalles del Pedido</h5>
+          <button class="close-btn" @click="cerrarModal">X</button>
+        </div>
+        <div class="custom-modal-body">
+          <div v-if="pedidoSeleccionado">
+            <h5>Información del Cliente</h5>
+            <p><strong>Nombre:</strong> {{ pedidoSeleccionado.cliente.nombre }} {{ pedidoSeleccionado.cliente.apellidos }}</p>
+            <p><strong>Email:</strong> {{ pedidoSeleccionado.cliente.email }}</p>
+            <p><strong>Teléfono:</strong> {{ pedidoSeleccionado.cliente.telefono }}</p>
           </div>
-          <div class="custom-modal-body">
-            <div v-if="pedidoSeleccionado">
-              <h5>Productos</h5>
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th>Nombre</th>
-                    <th>Precio Unitario</th>
-                    <th>Cantidad</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="producto in pedidoSeleccionado.productos" :key="producto.id">
-                    <td>{{ producto.nombre }}</td>
-                    <td>{{ producto.precioUnitario | currency }}</td>
-                    <td>{{ producto.cantidad }}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div v-else>
-              <p>Cargando detalles...</p>
-            </div>
-          </div>
-          <div class="custom-modal-footer">
-            <button class="btn btn-secondary" @click="cerrarModal">Cerrar</button>
+          <div v-else>
+            <p>Cargando detalles...</p>
           </div>
         </div>
+        <div class="custom-modal-footer">
+          <button class="btn btn-secondary" @click="cerrarModal">Cerrar</button>
+        </div>
       </div>
-      <div v-if="mostrarModal" class="custom-modal-backdrop" @click="cerrarModal"></div>
     </div>
-  </template>
-  
-  <script>
-  export default {
-    name: "HistorialPedidos",
-    data() {
-      return {
-        pedidos: [
-          { 
-            id: 1, 
-            cliente: "Juan Pérez", 
-            fecha: "2024-01-10", 
-            total: 100.50, 
-            productos: [
-              { id: 1, nombre: "Producto A", precioUnitario: 25.00, cantidad: 2 },
-              { id: 2, nombre: "Producto B", precioUnitario: 50.50, cantidad: 1 },
-            ]
-          },
-          { 
-            id: 2, 
-            cliente: "María Gómez", 
-            fecha: "2024-01-12", 
-            total: 50.75, 
-            productos: [
-              { id: 3, nombre: "Producto C", precioUnitario: 25.75, cantidad: 2 },
-            ]
-          },
-          { 
-            id: 3, 
-            cliente: "Carlos López", 
-            fecha: "2024-01-14", 
-            total: 25.00, 
-            productos: [
-              { id: 4, nombre: "Producto D", precioUnitario: 25.00, cantidad: 1 },
-            ]
-          },
-        ],
-        pedidoSeleccionado: null,
-        mostrarModal: false,
-      };
+    <div v-if="mostrarModal" class="custom-modal-backdrop" @click="cerrarModal"></div>
+  </div>
+</template>
+
+<script>
+import axios from "axios";
+import { toast } from "vue3-toastify";
+
+export default {
+  data() {
+    return {
+      pedidos: [],
+      mostrarModal: false,
+      pedidoSeleccionado: null,
+    };
+  },
+  created() {
+    this.fetchPedidos();
+  },
+  methods: {
+    async fetchPedidos() {
+      try {
+        const response = await axios.get("/api/v1/pedidos");
+        console.log("Pedidos recibidos:", response.data);
+        this.pedidos = response.data;
+      } catch (error) {
+        if (error.response) {
+          const messageError =
+            error.response.data.message || "Error al cargar los pedidos.";
+          toast(messageError, {
+            hideProgressBar: true,
+            autoClose: 1500,
+            type: "error",
+            theme: "colored",
+          });
+        } else {
+          console.error("Error de conexión:", error);
+        }
+      }
     },
-    methods: {
-      verDetalles(id) {
-        const pedido = this.pedidos.find(pedido => pedido.id === id);
-        this.pedidoSeleccionado = pedido;
-        this.mostrarModal = true;
-      },
-      cerrarModal() {
-        this.mostrarModal = false;
-        this.pedidoSeleccionado = null;
-      },
+    verDetalles(pedido) {
+      this.pedidoSeleccionado = pedido;
+      this.mostrarModal = true;
     },
-    filters: {
-      currency(value) {
-        return `$${value.toFixed(2)}`;
-      },
+    cerrarModal() {
+      this.mostrarModal = false;
+      this.pedidoSeleccionado = null;
     },
-  };
-  </script>
-  
+    formatDate(date) {
+      const options = { year: "numeric", month: "long", day: "numeric" };
+      return new Date(date).toLocaleDateString("es-MX", options);
+    },
+  },
+  filters: {
+    currency(value) {
+      return `$${value.toFixed(2)}`;
+    },
+  },
+};
+</script>
+
   <style scoped>
   .table th {
     background-color: #f0f8ff;
