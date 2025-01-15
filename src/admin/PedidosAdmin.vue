@@ -17,7 +17,7 @@
             <td>{{ pedido.idPedido }}</td>
             <td>{{ pedido.cliente.nombre }} {{ pedido.cliente.apellidos }}</td>
             <td>{{ formatDate(pedido.fechaCompra) }}</td>
-            <td>{{ pedido.precioTotal | currency }}</td>
+            <td>${{ pedido.precioTotal || currency }}</td>
             <td>
               <button class="btn btn-info btn-sm" @click="verDetalles(pedido)">Ver detalles</button>
             </td>
@@ -72,7 +72,6 @@ export default {
     async fetchPedidos() {
       try {
         const response = await axios.get("/api/v1/pedidos");
-        console.log("Pedidos recibidos:", response.data);
         this.pedidos = response.data;
       } catch (error) {
         if (error.response) {
