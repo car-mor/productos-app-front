@@ -274,7 +274,7 @@
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                 Cancelar
               </button>
-              <button type="submit" class="btn btn-primary">Guardar</button>
+              <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Guardar</button>
             </div>
           </form>
         </div>
@@ -329,7 +329,7 @@
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                 Cancelar
               </button>
-              <button type="submit" class="btn btn-primary">Guardar</button>
+              <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Guardar</button>
             </div>
           </form>
         </div>
@@ -392,7 +392,7 @@
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                 Cancelar
               </button>
-              <button type="submit" class="btn btn-primary">
+              <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">
                 Guardar
               </button>
             </div>
@@ -513,7 +513,6 @@ export default {
         const response = await axios.get("/api/v1/productos");
         const products = response.data;
         this.products = [...products];
-        console.log(this.products);
       } catch (error) {
         if (error.response) {
           let messageError = error.response.data.message;
@@ -539,7 +538,6 @@ export default {
       try {
         const response = await axios.get("/api/v1/proveedores");
         this.providers = response.data;
-        console.log(this.providers);
       } catch (error) {
         console.error("Error al cargar los proveedores:", error);
         this.providers = [];
@@ -565,8 +563,6 @@ export default {
       this.newProvider = {};
     },
     async saveCategory() {
-      const modal = document.getElementById("categoryModal");
-      const modalInstance = bootstrap.Modal.getInstance(modal);
       const proxy = new Proxy(this.newCategory, {
         get(target, prop) {
           if (prop === "getOriginal") {
@@ -585,7 +581,6 @@ export default {
             theme: "colored",
           });
           this.fetchCategories();
-          modalInstance.hide();
         }
       } catch (error) {
         if (error.response) {
@@ -600,8 +595,6 @@ export default {
       }
     },
     async saveNewProvider() {
-      const modal = document.getElementById("providerModal");
-      const modalInstance = bootstrap.Modal.getInstance(modal);
       const proxy = new Proxy(this.newProvider, {
         get(target, prop) {
           if (prop === "getOriginal") {
@@ -620,7 +613,6 @@ export default {
             theme: "colored",
           });
           this.fetchProviders();
-          modalInstance.hide();
         }
       } catch (error) {
         if (error.response) {
@@ -638,10 +630,7 @@ export default {
       this.currentProduct = { ...product };
     },
     saveProduct() {
-      console.log(this.currentProduct);
-      const modal = document.getElementById("productModal");
-      const modalInstance = bootstrap.Modal.getInstance(modal);
-      modalInstance.hide();
+      console.log(this.currentProduct)
     },
     confirmDelete(product) {
       if (confirm(`¿Está seguro de eliminar el producto "${product.name}"?`)) {

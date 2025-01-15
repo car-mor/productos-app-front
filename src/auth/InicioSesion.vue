@@ -26,7 +26,7 @@
               v-model="username"
               class="form-control"
               :class="{ 'is-invalid': usernameError }"
-              placeholder="Ingresa tu correo"
+              placeholder="Ingresa tu nombre de usuario"
               required
             />
           </div>

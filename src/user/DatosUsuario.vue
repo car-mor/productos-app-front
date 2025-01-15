@@ -9,7 +9,7 @@
           class="img-fluid rounded-circle mb-3"
           style="width: 150px; height: 150px; object-fit: cover"
         />
-        <h2>{{ user.name }}</h2>
+        <h2>{{ username }}</h2> 
       </div>
 
       <!-- Información del perfil -->
@@ -20,20 +20,19 @@
       </div>
       <div class="mb-3 d-flex justify-content-between">
         <p class="fs-5 mb-0 flex-grow-1">
-          <strong>Teléfono:</strong> {{ user.phone }}
+          <strong>Teléfono:</strong> {{ user.telefono }}
         </p>
       </div>
       <div class="mb-3 d-flex justify-content-between">
         <p class="fs-5 mb-0 flex-grow-1">
-          <strong>Dirección:</strong> {{ user.address }}
+          <strong>Dirección:</strong> {{ formatAddres() }}
         </p>
       </div>
       <div class="mb-3 d-flex justify-content-between">
-        <p class="fs-5 mb-0 flex-grow-1"><strong>Contraseña:</strong> ****</p>
       </div>
       <div class="mb-3 d-flex justify-content-between">
         <p class="fs-5 mb-0 flex-grow-1">
-          <strong>Fecha de Nacimiento:</strong> {{ user.birthdate }}
+          <strong>Fecha de Nacimiento:</strong> {{ user.fechaNacimiento }}
         </p>
       </div>
 
@@ -50,19 +49,26 @@ export default {
   name: "UserProfile",
   data() {
     return {
-      user: {
-        name: "Gerardo Ortiz",
-        email: "mruriel982@gmail.com",
-        phone: "56 1379 9463",
-        address: "Arbolada 4, Bosques de Tarango, Ciudad de México",
-        password: "****",
-        birthdate: "31 de Octubre, 2001",
-      },
+      user: {},
     };
+  },
+  created() {
+    this.user = JSON.parse(localStorage.getItem("userInfo"));
+  },
+  computed: {
+    username() {
+      return `${this.user.nombre} ${this.user.apellidos}`;
+    }
   },
   methods: {
     logout() {
       console.log("Cerrar sesión");
+    },
+    formatAddres()  {
+      if (!this.user || !this.user.calle || !this.user.colonia || !this.user.numero || !this.user.codigoPostal) {
+        return "Dirección incompleta";
+      }
+      return `${this.user.calle} ${this.user.numero}, ${this.user.colonia}, CP ${this.user.codigoPostal}`;
     },
   },
 };
