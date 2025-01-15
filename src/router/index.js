@@ -10,6 +10,7 @@ import MetodoPago from "@/cart/RelizarPagos.vue";
 import PerfilUsuario from "@/user/PerfilUsuario.vue";
 import RealizarPagos from "@/cart/RelizarPagos.vue";
 import Pedidos from "@/user/Pedidos.vue";
+import Autenticacion from "@/auth/Autenticacion.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -72,6 +73,11 @@ const router = createRouter({
       path: "/ver-pedidos",
       name: "VerPedidos",
       component: Pedidos, 
+    } ,
+    {
+      path: "/autenticacion",
+      name: "Autenticacion",
+      component: Autenticacion, 
     } 
   ],
 });

@@ -2,9 +2,17 @@
   <div>
     <MainHeader />
     <div class="container py-4 mt-4">
-      <!-- Grid de Productos -->
+      <!-- Verificación si hay productos -->
       <main>
-        <div class="row g-4">
+        <div v-if="products.length === 0" class="text-center py-5">
+          <h3>No hay productos disponibles</h3>
+          <div class="text-center">
+            <img src="../assets/pctriste.png" alt="Seguridad" style="max-width: 300px;" />
+        </div>
+          <p class="text-muted">Por favor, verifica más tarde.</p>
+        </div>
+        <div v-else class="row g-4">
+          <!-- Grid de Productos -->
           <div
             v-for="(product, index) in products"
             :key="index"
@@ -38,6 +46,7 @@
     </div>
   </div>
 </template>
+
 
 <script setup>
 import { ref, onMounted } from "vue";
