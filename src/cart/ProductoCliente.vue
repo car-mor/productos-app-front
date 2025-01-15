@@ -55,7 +55,7 @@
         <div class="mb-4">
           <label for="quantity" class="form-label">Cantidad:</label>
           <div class="d-flex gap-3 align-items-center">
-            <div class="input-group" style="width: 130px">
+            <div class="input-group" style="width: 140px">
               <button
                 class="btn btn-outline-secondary"
                 type="button"

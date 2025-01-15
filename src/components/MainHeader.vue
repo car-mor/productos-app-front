@@ -90,13 +90,15 @@ import { SearchIcon, ShoppingCartIcon, UserIcon } from "lucide-vue-next";
 import axios from "axios";
 
 let searchQuery = ref("");
-let cartItemsCount = ref(0);
 let isDropdownOpen = ref(false);
 let categories = ref([]);
 const toggleDropdown = () => {
   isDropdownOpen.value = !isDropdownOpen.value;
   console.log("Estado del dropdown:", isDropdownOpen.value);
 };
+const cartItemsCount = ref(1)
+
+const user = JSON.parse(localStorage.getItem("userInfo"));
 
 const fetchCategories = async () => {
   try {
@@ -108,8 +110,22 @@ const fetchCategories = async () => {
   }
 };
 
+const counItemsCarrito = async () => {
+  try {
+    const response = await axios.get("/api/v1/cart/count-items/", {
+      params: { idCarrito: user.carrito.idCarrito }
+    });
+    cartItemsCount.value = response.data;
+    console.log(cartItemsCount)
+  } catch (error) {
+    console.error("Error al contar los items del carrito:", error);
+    cartItemsCount.value = 0;
+  }
+}
+
 onMounted(() => {
   fetchCategories();
+  counItemsCarrito();
 });
 </script>
 

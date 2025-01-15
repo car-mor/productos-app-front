@@ -66,6 +66,7 @@
             <th style="min-width: 150px">Categoría</th>
             <th style="min-width: 120px">Precio</th>
             <th style="min-width: 150px">Stock</th>
+            <th style="min-width: 150px">Estado</th>
             <th style="min-width: 200px">Acciones</th>
           </tr>
         </thead>
@@ -111,6 +112,19 @@
                   @change="updateProductStock(product)"
                 />
                 <span class="input-group-text">unids.</span>
+              </div>
+            </td>
+            <td class="align-middle text-center">
+              <div class="d-flex justify-content-center align-items-center">
+                <span 
+                  class="badge" 
+                  :class="{
+                    'bg-success': product.activo === true,
+                    'bg-danger': product.activo === false,
+                  }"
+                >
+                  {{ product.activo ? 'Activo' : 'Inactivo' }}
+                </span>
               </div>
             </td>
             <td class="align-middle">
@@ -203,7 +217,7 @@
                     <option
                       v-for="provider in providers"
                       :key="provider.idProveedor"
-                      :value="provider.idProveedor"
+                      :value="provider"
                     >
                       {{ provider.nombreProveedor }}
                     </option>
@@ -220,7 +234,7 @@
                     <option
                       v-for="category in categories"
                       :key="category.idCategoria"
-                      :value="category.idCategoria"
+                      :value="category"
                     >
                       {{ category.nombreCategoria }}
                     </option>
@@ -274,7 +288,7 @@
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                 Cancelar
               </button>
-              <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Guardar</button>
+              <button type="submit" class="btn btn-primary">Guardar</button>
             </div>
           </form>
         </div>
@@ -473,15 +487,15 @@ export default {
       providers: [],
       categories: [],
       currentProduct: {
-        id: null,
-        name: "",
-        description: "",
-        photo: "",
-        provider: "",
-        category: "",
-        price: 0,
+        idProducto: null,
+        nombreProducto: "",
+        descripcionProducto: "",
+        imagenUrl: "",
+        proveedor: "",
+        categoria: "",
+        precioUnitario: 0,
         stock: 0,
-        status: "active",
+        activo: false,
       },
       newCategory: {
         nombreCategoria: "",
@@ -545,16 +559,16 @@ export default {
     },
     openAddProductModal() {
       this.currentProduct = {
-        id: null,
-        name: "",
-        description: "",
-        photo: "",
-        provider: "",
-        ategory: "",
-        price: 0,
+        idProducto: null,
+        nombreProducto: "",
+        descripcionProducto: "",
+        imagenUrl: "",
+        proveedor: "",
+        categoria: "",
+        precioUnitario: 0,
         stock: 0,
-        status: "active",
-      };
+        activo: false,
+      }
     },
     openAddCategoryModal() {
       this.newCategory = {};
@@ -629,8 +643,37 @@ export default {
     openEditProductModal(product) {
       this.currentProduct = { ...product };
     },
-    saveProduct() {
-      console.log(this.currentProduct)
+    async saveProduct() {
+      let successMessage = ''
+      if (this.currentProduct.idProducto) {
+        successMessage = "Producto actualizado correctamente";
+      } else {
+        successMessage = "Producto guardado correctamente";
+      }
+      try {
+        const response = await axios.post(
+          "/api/v1/productos", this.currentProduct
+        );
+        if (response) {
+          toast(successMessage, {
+            hideProgressBar: true,
+            autoClose: 1500,
+            type: "success",
+            theme: "colored",
+          });
+          this.fetchProducts();
+        }
+      } catch (error) {
+        if (error.response) {
+          let messageError = error.response.data.message;
+          toast(messageError, {
+            hideProgressBar: true,
+            autoClose: 1500,
+            type: "error",
+            theme: "colored",
+          });
+        }
+      }
     },
     confirmDelete(product) {
       if (confirm(`¿Está seguro de eliminar el producto "${product.name}"?`)) {
