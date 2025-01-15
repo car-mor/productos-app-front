@@ -11,6 +11,7 @@ import PerfilUsuario from "@/user/PerfilUsuario.vue";
 import RealizarPagos from "@/cart/RelizarPagos.vue";
 import Pedidos from "@/user/Pedidos.vue";
 import Autenticacion from "@/auth/Autenticacion.vue";
+import PerfilAdmin from "@/admin/PerfilAdmin.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -78,7 +79,12 @@ const router = createRouter({
       path: "/autenticacion",
       name: "Autenticacion",
       component: Autenticacion, 
-    } 
+    },
+    {
+      path: "/perfil-admin",
+      name: "PerfilAdminitrador",
+      component: PerfilAdmin, 
+    }
   ],
 });
 
