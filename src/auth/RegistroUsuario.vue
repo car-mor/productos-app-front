@@ -283,10 +283,17 @@ const handleRegister = async () => {
         },
       }) 
       if (response) {
-        console.log(response.data.email);
-        router.push({
-          name: 'Autenticacion',
-          query: { email: response.data.email }
+        toast("Registro exitoso", {
+          hideProgressBar: true,
+          autoClose: 600,
+          type: "success",
+          theme: "colored",
+          onClose: () => {
+            router.push({
+              name: 'Autenticacion',
+              query: { email: response.data.email }
+            })
+          },
         })
       }
     } catch (error) {

@@ -36,19 +36,25 @@
         </button>
       </div>
 
-      <a href="#" class="text-center text-warning d-block" @click="resendCode">
+      <button class="btn text-warning d-block text-center" @click="resendCode">
         Enviar nuevo código
-      </a>
+      </button>
     </div>
   </div>
 </template>
 
 <script>
+import axios from 'axios';
+import { toast } from 'vue3-toastify'
 export default {
   data() {
     return {
       code: ["", "", "", "", "", ""], // Array para almacenar cada dígito
+      email: "",
     };
+  },
+  created() {
+    this.email = this.$route.query.email
   },
   methods: {
     handleInput(index) {
@@ -63,16 +69,63 @@ export default {
         this.$refs["input" + (index - 1)][0]?.focus();
       }
     },
-    validateCode() {
+    async validateCode() {
       const fullCode = this.code.join("");
-      if (fullCode.length === 6) {
-        alert(`Código validado: ${fullCode}`);
-      } else {
-        alert("Por favor, completa todos los campos.");
+      try {
+        const response = await axios.post('/api/v1/validate-token', {
+          email: this.email,
+          token: fullCode,
+        });
+        if (response) {
+          toast(response.data, {
+            hideProgressBar: true,
+            autoClose: 600,
+            type: "success",
+            theme: "colored",
+            onClose: () => {
+              this.$router.push({
+                name: 'InicioSesion',
+              })
+            },
+          })
+        }
+      } catch (error) {
+        if (error.response) {
+          let messageError = error.response.data.message
+          toast(messageError, {
+            hideProgressBar: true,
+            autoClose: 1500,
+            type: "error",
+            theme: "colored",
+          })
+        }
       }
     },
-    resendCode() {
-      alert("Se ha enviado un nuevo código.");
+    async resendCode() {
+      console.log(this.email)
+      try {
+        const response = await axios.get('/api/v1/send-token', {
+          params: { email: this.email },
+        });
+        if (response) {
+          toast(response.data, {
+            hideProgressBar: true,
+            autoClose: 600,
+            type: "success",
+            theme: "colored",
+          })
+        }
+      } catch (error) {
+        if (error.response) {
+          let messageError = error.response.data.message
+          toast(messageError, {
+            hideProgressBar: true,
+            autoClose: 1500,
+            type: "error",
+            theme: "colored",
+          })
+        }
+      }
     },
   },
 };
