@@ -24,128 +24,164 @@
       </div>
     </div>
 
-    <!-- Botón para agregar un nuevo producto -->
-    <button
-      class="btn btn-primary me-4 mb-4 px-4"
-      data-bs-toggle="modal"
-      data-bs-target="#productModal"
-      @click="openAddProductModal"
-    >
-      <i class="bi bi-plus-circle me-2"></i>Agregar Producto
-    </button>
+    <div class="card shadow-lg rounded-4 p-4 border-0 bg-light">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+      <!-- Botón para agregar un nuevo producto -->
+      <button
+        class="btn btn-outline-primary d-flex align-items-center gap-2"
+        data-bs-toggle="modal"
+        data-bs-target="#productModal"
+        @click="openAddProductModal"
+      >
+        <i class="bi bi-plus-circle fs-5"></i>
+        <span>Agregar Producto</span>
+      </button>
 
-    <!-- Botón para agregar nueva categoría -->
-    <button
-      class="btn btn-primary me-4 mb-4 px-4"
-      data-bs-toggle="modal"
-      data-bs-target="#categoryModal"
-      @click="openAddCategoryModal"
-    >
-      <i class="bi bi-folder-plus me-2"></i>Agregar Categoría
-    </button>
+      <!-- Botón para agregar nueva categoría -->
+      <button
+        class="btn btn-outline-success d-flex align-items-center gap-2"
+        data-bs-toggle="modal"
+        data-bs-target="#categoryModal"
+        @click="openAddCategoryModal"
+      >
+        <i class="bi bi-folder-plus fs-5"></i>
+        <span>Agregar Categoría</span>
+      </button>
 
-    <!-- Botón para agregar un nuevo proveedor -->
-    <button
-      class="btn btn-primary me-4 mb-4 px-4"
-      data-bs-toggle="modal"
-      data-bs-target="#providerModal"
-      @click="openAddProviderModal"
-    >
-      <i class="bi bi-building-add me-2"></i>Agregar Proveedor
-    </button>
-
-    <!-- Tabla de productos (actualizada con categoría)-->
-    <div class="table-responsive shadow-sm rounded">
-      <table class="table table-hover table-bordered mb-0">
-        <thead class="table-dark">
-          <tr>
-            <th class="text-center" style="width: 80px">Foto</th>
-            <th style="min-width: 200px">Nombre</th>
-            <th style="min-width: 180px">Descripcion</th>
-            <th style="min-width: 180px">Proveedor</th>
-            <th style="min-width: 150px">Categoría</th>
-            <th style="min-width: 120px">Precio</th>
-            <th style="min-width: 150px">Stock</th>
-            <th style="min-width: 150px">Estado</th>
-            <th style="min-width: 200px">Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="product in products"
-            :key="product.idProducto"
-            :class="{ 'table-danger': product.stock === 0 }"
-          >
-            <td class="text-center">
-              <img
-                :src="product.imagenUrl"
-                alt="Foto"
-                class="rounded"
-                style="width: 60px; height: 60px; object-fit: cover"
-              />
-            </td>
-            <td class="align-middle fw-semibold">{{ product.nombreProducto }}</td>
-            <td class="align-middle">{{ product.descripcionProducto }}</td>
-            <td class="align-middle">
-              <div class="d-flex align-items-center">
-                {{ product.proveedor.nombreProveedor }}
-                <button
-                  class="btn btn-sm btn-outline-info ms-2"
-                  data-bs-toggle="modal"
-                  data-bs-target="#providerDetailsModal"
-                  @click="openProviderDetails(product.proveedor.nombreProveedor)"
-                  title="Ver detalles del proveedor"
-                >
-                  <i class="bi bi-info-circle"></i>
-                </button>
-              </div>
-            </td>
-            <td class="align-middle">{{ product.categoria.nombreCategoria }}</td>
-            <td class="align-middle">${{ product.precioUnitario.toLocaleString() }}</td>
-            <td class="align-middle">
-              <div class="input-group">
-                <input
-                  type="number"
-                  class="form-control form-control-sm"
-                  v-model.number="product.stock"
-                  readonly
-                  @change="updateProductStock(product)"
-                />
-                <span class="input-group-text">unids.</span>
-              </div>
-            </td>
-            <td class="align-middle text-center">
-              <div class="d-flex justify-content-center align-items-center">
-                <span 
-                  class="badge" 
-                  :class="{
-                    'bg-success': product.activo === true,
-                    'bg-danger': product.activo === false,
-                  }"
-                >
-                  {{ product.activo ? 'Activo' : 'Inactivo' }}
-                </span>
-              </div>
-            </td>
-            <td class="align-middle">
-              <div class="btn-group">
-                <button
-                  class="btn btn-warning btn-sm"
-                  data-bs-toggle="modal"
-                  data-bs-target="#productModal"
-                  @click="openEditProductModal(product)"
-                >
-                  <i class="bi bi-pencil me-1"></i>Editar
-                </button>
-                <button class="btn btn-danger btn-sm" @click="confirmDelete(product)">
-                  <i class="bi bi-trash me-1"></i>Eliminar
-                </button>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <!-- Botón para agregar un nuevo proveedor -->
+      <button
+        class="btn btn-outline-info d-flex align-items-center gap-2"
+        data-bs-toggle="modal"
+        data-bs-target="#providerModal"
+        @click="openAddProviderModal"
+      >
+        <i class="bi bi-building-add fs-5"></i>
+        <span>Agregar Proveedor</span>
+      </button>
     </div>
+  </div>
+
+    <!-- Tabla de productos -->
+    <div class="card shadow-lg rounded-4 border-0">
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-striped table-hover align-middle text-center mb-0">
+              <thead>
+              <tr>
+                <th class="text-center align-middle" style="width: 80px; background-color: #87CEEB; color: white;">
+                  <i class="bi bi-image"></i> Foto
+                </th>
+                <th class="align-middle" style="background-color: #87CEEB; color: white;">
+                  <i class="bi bi-tag"></i> Nombre
+                </th>
+                <th class="align-middle" style="background-color: #87CEEB; color: white;">
+                  <i class="bi bi-card-text"></i> Descripción
+                </th>
+                <th class="align-middle" style="background-color: #87CEEB; color: white;">
+                  <i class="bi bi-person-circle"></i> Proveedor
+                </th>
+                <th class="align-middle" style="background-color: #87CEEB; color: white;">
+                  <i class="bi bi-list"></i> Categoría
+                </th>
+                <th class="align-middle text-end" style="background-color: #87CEEB; color: white;">
+                  <i class="bi bi-currency-dollar"></i> Precio
+                </th>
+                <th class="align-middle text-end" style="background-color: #87CEEB; color: white;">
+                  <i class="bi bi-box"></i> Stock
+                </th>
+                <th class="align-middle text-center" style="background-color: #87CEEB; color: white;">
+                  <i class="bi bi-check-circle"></i> Estado
+                </th>
+                <th class="align-middle text-center" style="background-color: #87CEEB; color: white;">
+                  <i class="bi bi-tools"></i> Acciones
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr 
+                v-for="product in products" 
+                :key="product.idProducto" 
+                :class="{ 'table-danger': product.stock === 0 }"
+              >
+                <td>
+                  <img 
+                    :src="product.imagenUrl" 
+                    alt="Foto" 
+                    class="rounded-circle border border-secondary" 
+                    style="width: 60px; height: 60px; object-fit: cover;"
+                  />
+                </td>
+                <td class="fw-bold">{{ product.nombreProducto }}</td>
+                <td class="text-truncate" style="max-width: 180px;" title="{{ product.descripcionProducto }}">
+                  {{ product.descripcionProducto }}
+                </td>
+                <td>
+                  <div class="d-flex justify-content-center align-items-center">
+                    {{ product.proveedor.nombreProveedor }}
+                    <button 
+                      class="btn btn-sm btn-outline-light ms-2" 
+                      data-bs-toggle="modal" 
+                      data-bs-target="#providerDetailsModal" 
+                      @click="openProviderDetails(product.proveedor.nombreProveedor)"
+                      title="Ver detalles del proveedor"
+                    >
+                      <i class="bi bi-info-circle text-primary"></i>
+                    </button>
+                  </div>
+                </td>
+                <td>{{ product.categoria.nombreCategoria }}</td>
+                <td>${{ product.precioUnitario.toLocaleString() }}</td>
+                <td>
+                  <div class="input-group input-group-sm">
+                    <input 
+                      type="number" 
+                      class="form-control" 
+                      v-model.number="product.stock" 
+                      readonly 
+                      @change="updateProductStock(product)"
+                    />
+                    <span class="input-group-text">unids.</span>
+                  </div>
+                </td>
+                <td>
+                  <span 
+                    class="badge" 
+                    :class="{
+                      'bg-success': product.activo,
+                      'bg-danger': !product.activo
+                    }"
+                  >
+                    {{ product.activo ? 'Activo' : 'Inactivo' }}
+                  </span>
+                </td>
+                <td>
+                  <div class="btn-group">
+                    <button 
+                      class="btn btn-sm btn-warning" 
+                      data-bs-toggle="modal" 
+                      data-bs-target="#productModal" 
+                      @click="openEditProductModal(product)"
+                    >
+                      <i class="bi bi-pencil me-1"></i>Editar
+                    </button>
+                    <button 
+                      class="btn btn-sm btn-danger" 
+                      @click="confirmDelete(product)"
+                    >
+                      <i class="bi bi-trash me-1"></i>Eliminar
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="card-footer text-muted text-center">
+        Total de productos: {{ products.length }}
+      </div>
+    </div>
+
 
     <!-- Modal para editar o agregar producto (actualizado con categoría y descrpción del producto) -->
     <div
