@@ -21,7 +21,11 @@
               >
                 No hay categorías disponibles
               </li>
-              <li v-else v-for="category in categories" :key="category.idCategoria">
+              <li
+                v-else
+                v-for="category in categories"
+                :key="category.idCategoria"
+              >
                 <a :href="'/categorias/' + category.id" class="dropdown-item">
                   {{ category.nombreCategoria }}
                 </a>
@@ -34,14 +38,14 @@
 
       <div class="actions-group">
         <div class="search-bar" v-if="isSearchBarEnabled">
-  <input 
-    type="text" 
-    placeholder="Buscar electrodomésticos..." 
-    v-model="searchQuery" 
-    :disabled="!isSearchBarEnabled" />
-  <SearchIcon class="search-icon" />
-</div>
-
+          <input
+            type="text"
+            placeholder="Buscar electrodomésticos..."
+            v-model="searchQuery"
+            :disabled="!isSearchBarEnabled"
+          />
+          <SearchIcon class="search-icon" />
+        </div>
 
         <!-- UserIcon con menú condicional -->
         <div class="user-actions">
@@ -50,13 +54,22 @@
           </div>
           <ul v-if="isUserMenuOpen" class="dropdown-menu">
             <li v-if="isLogged">
-              <router-link to="/perfil-usuario" class="dropdown-item">Mi Perfil</router-link>
+              <router-link to="/perfil-usuario" class="dropdown-item"
+                >Mi Perfil</router-link
+              >
             </li>
             <li v-if="isLogged">
-              <router-link to="/perfil-usuario" class="dropdown-item" @click="logout">Cerrar Sesión</router-link>
+              <router-link
+                to="/perfil-usuario"
+                class="dropdown-item"
+                @click="logout"
+                >Cerrar Sesión</router-link
+              >
             </li>
             <li v-else>
-              <router-link to="/inicio-sesion" class="dropdown-item">Iniciar Sesión</router-link>
+              <router-link to="/inicio-sesion" class="dropdown-item"
+                >Iniciar Sesión</router-link
+              >
             </li>
           </ul>
           <RouterLink to="/carrito-compras">
@@ -71,11 +84,10 @@
   </header>
 </template>
 
-
 <script setup>
 import { ref, onMounted } from "vue";
 import { SearchIcon, ShoppingCartIcon, UserIcon } from "lucide-vue-next";
-import axios from "axios"; 
+import axios from "axios";
 
 let searchQuery = ref("");
 let cartItemsCount = ref(0);
@@ -92,7 +104,7 @@ const fetchCategories = async () => {
     categories.value = response.data;
   } catch (error) {
     console.error("Error al cargar las categorías:", error);
-    categories.value = []; 
+    categories.value = [];
   }
 };
 
@@ -100,7 +112,6 @@ onMounted(() => {
   fetchCategories();
 });
 </script>
-
 
 <style scoped>
 /* Estilos principales del header */

@@ -4,8 +4,8 @@
       <!-- Columna de la imagen -->
       <div class="col-md-6 mb-4 h-100">
         <img
-          :src="product.mainImage || defaultImage"
-          :alt="product.name"
+          :src="product.imagenUrl || defaultImage"
+          :alt="product.nombreProducto"
           class="img-fluid rounded"
         />
 
@@ -38,16 +38,16 @@
 
       <!-- Columna de detalles -->
       <div class="col-md-6">
-        <h2 class="mb-2">{{ product.name }}</h2>
-        <p class="text-muted mb-3">de {{ product.provider }}</p>
+        <h2 class="mb-2">{{ product.nombreProducto }}</h2>
+        <p class="text-muted mb-3">de {{ product.proveedor.nombreProveedor }}</p>
 
         <div class="fs-3 fw-bold text-primary mb-4">
-          {{ formatPrice(product.price) }}
+          {{ formatPrice(product.precioUnitario) }}
         </div>
 
         <!-- Stock status -->
         <div class="mb-4">
-          <span v-if="product.inStock" class="badge bg-success">En stock</span>
+          <span v-if="product.stock > 0" class="badge bg-success">En stock</span>
           <span v-else class="badge bg-danger">Agotado</span>
         </div>
 
@@ -70,13 +70,14 @@
                 id="quantity"
                 v-model.number="quantity"
                 min="1"
-                :max="product.maxQuantity"
+                readonly
+                :max="product.stock"
               />
               <button
                 class="btn btn-outline-secondary"
                 type="button"
                 @click="increaseQuantity"
-                :disabled="quantity >= product.maxQuantity"
+                :disabled="quantity >= product.stock"
               >
                 <i class="bi bi-plus"></i>
               </button>
@@ -85,7 +86,7 @@
             <button
               class="btn btn-primary"
               @click="addToCart"
-              :disabled="!product.inStock"
+              :disabled="product.stock <= 0"
             >
               Agregar al carrito
             </button>
@@ -95,36 +96,21 @@
         <!-- Descripción -->
         <div class="mt-4">
           <h5>Descripción</h5>
-          <p>{{ product.description }}</p>
+          <p>{{ product.descripcionProducto }}</p>
         </div>
       </div>
     </div>
     <!-- Componente de reseñas -->
-    <ResenasProducto :productId="product.id" />
+    <ResenasProducto :productId="product.idProducto" />
   </div>
 </template>
 
 <script>
 import { defineComponent, ref, onMounted } from "vue";
 import ResenasProducto from "@/cart/ResenasProducto.vue";
-
-// Datos de prueba
-const mockProduct = {
-  id: 1,
-  name: "Bermuda Beige",
-  provider: "Regi Roots",
-  price: 500.0,
-  mainImage:
-    "https://http2.mlstatic.com/D_NQ_NP_605415-MLM77550499046_072024-O.webp",
-  additionalImages: [
-    "https://http2.mlstatic.com/D_NQ_NP_902994-MLM77768526235_072024-O.webp",
-    "https://http2.mlstatic.com/D_NQ_NP_960488-MLM77550461176_072024-O.webp",
-    "https://http2.mlstatic.com/D_NQ_NP_824987-MLM77797697772_072024-O.webp",
-  ],
-  description: "Bermuda beige de gabardina con detalles rastas, bolsa secreta.",
-  inStock: true,
-  maxQuantity: 10,
-};
+import axios from "axios";
+import { useRoute, useRouter } from 'vue-router';
+import { toast } from 'vue3-toastify'
 
 export default defineComponent({
   name: "ProductDetail",
@@ -133,18 +119,65 @@ export default defineComponent({
   },
 
   setup() {
+    const route = useRoute();
+    const router = useRouter()
     const product = ref(null);
     const quantity = ref(1);
     const defaultImage = "https://via.placeholder.com/500"; // Imagen genérica por defecto
+    const user = JSON.parse(localStorage.getItem("userInfo"));
+    console.log(user)
 
-    // Cargar datos del producto
     const loadProduct = async () => {
+      const idProduct = route.query.id
+      console.log(idProduct)
       try {
-        // Aquí iría tu llamada al backend
-        await new Promise((resolve) => setTimeout(resolve, 500)); // Simular delay
-        product.value = mockProduct;
+        const response = await axios.get(
+          `/api/v1/productos/${idProduct}`
+        )
+        product.value = response.data;
       } catch (error) {
-        console.error("Error al cargar el producto:", error);
+        if (error.response) {
+          let messageError = error.response.data.message
+          toast(messageError, {
+            hideProgressBar: true,
+            autoClose: 1500,
+            type: "error",
+            theme: "colored",
+          })
+        }
+      }
+    }
+
+    // Agregar al carrito
+    const addToCart = async () => {
+      const data = {
+        cantidad: quantity.value,
+        producto: product.value,
+        carrito: user.carrito,
+      }
+      try {
+        const response = await axios.post('/api/v1/cart/add', data);
+        if (response) {
+          toast("Producto añadido al carrito", {
+            hideProgressBar: true,
+            autoClose: 600,
+            type: "success",
+            theme: "colored",
+            onClose: () => {
+              router.push({name: 'CarritoDeCompras'})
+            },
+          })
+        }
+      } catch (error) {
+        if (error.response) {
+          let messageError = error.response.data.message
+          toast(messageError, {
+            hideProgressBar: true,
+            autoClose: 1500,
+            type: "error",
+            theme: "colored",
+          })
+        }
       }
     };
 
@@ -158,9 +191,7 @@ export default defineComponent({
 
     // Manejar cantidad
     const increaseQuantity = () => {
-      if (quantity.value < product.value.maxQuantity) {
-        quantity.value++;
-      }
+      quantity.value++;
     };
 
     const decreaseQuantity = () => {
@@ -179,13 +210,6 @@ export default defineComponent({
           img === image ? currentMain : img
         ),
       };
-    };
-
-    // Agregar al carrito
-    const addToCart = () => {
-      alert(
-        `Agregado al carrito: ${quantity.value} unidad(es) de ${product.value.name}`
-      );
     };
 
     onMounted(loadProduct);

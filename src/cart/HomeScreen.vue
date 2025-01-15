@@ -28,7 +28,7 @@
                   >
                 </p>
                 <button class="btn btn-primary w-100" @click="sendToCart(product)">
-                  Agregar al carrito
+                  Detalle
                 </button>
               </div>
             </div>
@@ -44,8 +44,10 @@ import { ref, onMounted } from "vue";
 import MainHeader from "@/components/MainHeader.vue";
 import { toast } from 'vue3-toastify'
 import axios from 'axios';
+import { useRouter } from 'vue-router';
 
 const products = ref([]); 
+const router = useRouter()
 
 const fetchProducts = async ()  => {
   try {
@@ -65,7 +67,10 @@ const fetchProducts = async ()  => {
 }
 
 const sendToCart = async(product) => {
-  console.log(product)
+  router.push({
+    name: 'ProductoCliente',
+    query: { id: product.idProducto }
+  })
 }
 
 onMounted(() => {
@@ -95,5 +100,17 @@ onMounted(() => {
 
 .btn-primary {
   margin-top: auto;
+  border: 1px solid #2563eb;
+  background-color: transparent;
+  color: #2563eb; 
+  padding: 10px 20px; 
+  font-weight: 500; 
+  border-radius: 5px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: #2563eb;
+  color: #ffffff;
 }
 </style>

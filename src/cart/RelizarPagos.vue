@@ -14,10 +14,9 @@
           <h5 class="card-title mb-0">Datos del envío</h5>
         </div>
         <p>
-          Enviar a: <strong>{{ shippingAddress.name }}</strong><br />
-          {{ shippingAddress.address }}
+          Enviar a: <strong>{{ user.nombre }}</strong> <strong>{{ user.apellidos }}</strong><br />
+          {{ formatAddres() }}
         </p>
-        <button class="btn btn-link p-0" @click="changeAddress">Cambiar</button>
       </div>
     </div>
 
@@ -87,7 +86,7 @@
           <LucideDollarSign class="me-2" />
           <h5 class="card-title">Resumen del pedido</h5>
         </div>
-        <p>Total (IVA incluido): <strong>$799.00</strong></p>
+        <p>Total (IVA incluido): <strong>{{ subTotal }}</strong></p>
 
         <!-- País o región -->
         <div class="mb-3">
@@ -128,7 +127,7 @@
 
         <!-- Botón para confirmar pago y dirección -->
         <button
-          @click="showModal"
+          @click="createOrder"
           :disabled="!aceptaTerminos || !esMayorDeEdad || !paisSeleccionado"
           class="btn btn-outline-success w-100"
         >
@@ -196,26 +195,6 @@
               aria-label="Close"
             ></button>
           </div>
-          <div class="modal-body">
-            <div class="mb-3">
-              <label for="name" class="form-label">Nombre</label>
-              <input
-                type="text"
-                id="name"
-                class="form-control"
-                v-model="shippingAddress.name"
-              />
-            </div>
-            <div class="mb-3">
-              <label for="address" class="form-label">Dirección</label>
-              <input
-                type="text"
-                id="address"
-                class="form-control"
-                v-model="shippingAddress.address"
-              />
-            </div>
-          </div>
           <div class="modal-footer">
             <button
               type="button"
@@ -258,10 +237,8 @@ export default {
   },
   data() {
     return {
-      shippingAddress: {
-        name: "Gerardo Ortiz",
-        address: "Cerrada de Alborada, TARANGO, CIUDAD DE MÉXICO, 01588",
-      },
+      user: {},
+      subTotal: 0,
       nuevaTarjeta: {
         numero: "",
         fechaVencimiento: "",
@@ -274,7 +251,17 @@ export default {
       esMayorDeEdad: false,
     };
   },
+  created() {
+    this.user = JSON.parse(localStorage.getItem("userInfo"));
+    this.subTotal = this.$route.query.subTotal
+  },
   methods: {
+    formatAddres()  {
+      if (!this.user || !this.user.calle || !this.user.colonia || !this.user.numero || !this.user.codigoPostal) {
+        return "Dirección incompleta";
+      }
+      return `${this.user.calle} ${this.user.numero}, ${this.user.colonia}, CP ${this.user.codigoPostal}`;
+    },
     changeAddress() {
       const modalElement = document.getElementById("changeAddressModal");
       const modalInstance = new Modal(modalElement);
@@ -293,6 +280,35 @@ export default {
         cvc: "",
       };
     },
+    async createOrder() {
+      const today = new Date();
+      const year = today.getFullYear();
+      const month = String(today.getMonth() + 1).padStart(2, '0'); // Mes comienza desde 0
+      const day = String(today.getDate()).padStart(2, '0');
+      const formattedDate = `${year}-${month}-${day}`;
+      const data = {
+        precioTotal: this.subTotal,
+        fechaCompra: formattedDate,
+        tipodePago: 'Tarjeta de crédito',
+        estatusPedido: 'Preparando',
+      }
+      try {
+        const response = await axios.post('/api/v1/pedidos', data,{
+          params: { idCliente: user.idCliente }
+        })
+        this.showModal();
+      } catch (error) {
+        if (error.response) {
+          let messageError = error.response.data.message
+          toast(messageError, {
+            hideProgressBar: true,
+            autoClose: 1500,
+            type: "error",
+            theme: "colored",
+          })
+        }
+      }
+    }
   },
 };
 </script>

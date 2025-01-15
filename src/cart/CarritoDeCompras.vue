@@ -1,11 +1,11 @@
 <template>
   <div class="h-screen w-full flex flex-col md:flex-row bg-gray-100">
-    <MainHeader/>
+    <MainHeader />
     <div class="container py-4">
       <h2 class="mb-4">Carrito de Compras</h2>
 
       <!-- Verificación de datos -->
-      <template v-if="cart && cart.items">
+      <template v-if="cartLenght">
         <!-- Grid container -->
         <div class="row">
           <!-- Lista de Productos - Ocupa 8 columnas en pantallas grandes -->
@@ -21,9 +21,9 @@
                 </div>
 
                 <!-- Items del carrito -->
-                <template v-if="cart.items.length">
+                <template v-if="cartLenght > 0">
                   <div
-                    v-for="item in cart.items"
+                    v-for="item in cart"
                     :key="item.id"
                     class="row align-items-center py-3 border-bottom"
                   >
@@ -31,15 +31,15 @@
                     <div class="col-12 col-md-6 mb-2 mb-md-0">
                       <div class="d-flex align-items-center">
                         <img
-                          :src="item.imageUrl"
-                          :alt="item.name"
+                          :src="item.producto.imagenUrl"
+                          :alt="item.producto.nombreProducto"
                           class="cart-item-image me-3"
                           style="width: 80px; height: 80px; object-fit: cover"
                         />
                         <div>
-                          <h6 class="mb-0">{{ item.name }}</h6>
+                          <h6 class="mb-0">{{ item.producto.nombreProducto }}</h6>
                           <small class="text-muted"
-                            >Proveedor: {{ item.provider }}</small
+                            >Proveedor: {{ item.producto.proveedor.nombreProveedor }}</small
                           >
                         </div>
                       </div>
@@ -53,7 +53,6 @@
                         <button
                           class="btn btn-sm btn-outline-secondary"
                           @click="decreaseQuantity(item)"
-                          :disabled="item.quantity <= 1"
                         >
                           <i class="bi bi-dash"></i>
                           <!-- Ícono de menos -->
@@ -62,11 +61,13 @@
                           type="number"
                           class="form-control form-control-sm mx-2 text-center"
                           style="width: 60px"
-                          v-model.number="item.quantity"
-                          @change="updateQuantity(item)"
+                          v-model.number="item.cantidad"
+                          readonly
+                          :max="item.producto.stock"
                         />
                         <button
                           class="btn btn-sm btn-outline-secondary"
+                          :disabled="item.cantidad >= item.producto.stock"
                           @click="increaseQuantity(item)"
                         >
                           <i class="bi bi-plus"></i>
@@ -78,16 +79,16 @@
                     <!-- Precio unitario -->
                     <div class="col-6 col-md-2 text-end text-md-center">
                       <span class="d-inline d-md-none">Precio: </span>
-                      {{ formatPrice(item.price) }}
+                      {{ formatPrice(item.producto.precioUnitario) }}
                     </div>
 
                     <!-- Subtotal -->
                     <div class="col-6 col-md-2 text-end text-md-center">
                       <span class="d-inline d-md-none">Subtotal: </span>
-                      {{ formatPrice(item.price * item.quantity) }}
+                      {{ formatPrice(item.producto.precioUnitario * item.cantidad) }}
                       <button
                         class="btn btn-sm text-danger ms-2"
-                        @click="removeItem(item.id)"
+                        @click="removeItem(item)"
                       >
                         <i class="bi bi-trash"></i>
                       </button>
@@ -116,8 +117,7 @@
                 <!-- Dirección de envío -->
                 <div class="mb-4">
                   <h6 class="mb-2">Dirección de Envío</h6>
-                  <address class="mb-0" v-if="cart.shippingAddress">
-                  </address>
+                  <address class="mb-0" v-if="cart.shippingAddress"></address>
                   <button
                     class="btn btn-sm btn-outline-primary mt-2"
                     @click="showAddressForm = true"
@@ -129,14 +129,20 @@
                     <div class="modal-overlay">
                       <div class="modal-content shadow bg-white">
                         <h5>Dirección de entrega</h5>
-                          <div class="mb-3">
-                            <label for="street" class="form-label">{{ editAddress.address }}</label>
-                          </div>
-                          <div class="d-flex justify-content-end">
-                            <button type="button" class="btn btn-primary" @click="showAddressForm = false">
-                              Cerrar
-                            </button>
-                          </div>
+                        <div class="mb-3">
+                          <label for="street" class="form-label">
+                            {{ editAddress }}
+                          </label>
+                        </div>
+                        <div class="d-flex justify-content-end">
+                          <button
+                            type="button"
+                            class="btn btn-primary"
+                            @click="showAddressForm = false"
+                          >
+                            Cerrar
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </template>
@@ -146,28 +152,30 @@
                 <div class="border-top pt-3">
                   <div class="d-flex justify-content-between mb-2">
                     <span>Subtotal</span>
-                    <span>{{ formatPrice(cart.subtotal) }}</span>
+                    <span>{{ formatPrice( subTotal ) }}</span>
                   </div>
                   <div class="d-flex justify-content-between mb-2">
                     <span>Envío</span>
-                    <span>{{ formatPrice(cart.shipping) }}</span>
+                    <span>{{ formatPrice(0.0) }}</span>
                   </div>
                   <div
                     class="d-flex justify-content-between fw-bold mt-3 pt-3 border-top"
                   >
                     <span>Total</span>
-                    <span>{{ formatPrice(cart.total) }}</span>
+                    <span>{{ formatPrice( subTotal ) }}</span>
                   </div>
 
-                  <router-link to="/metodo-pago" class="w-100 mt-4">
+                  <router-link
+                    :to="{ path: '/metodo-pago', query: { subTotal: subTotal } }"
+                    class="w-100 mt-4"
+                  >
                     <button
                       class="btn btn-primary w-100"
-                      :disabled="!cart.items.length"
+                      :disabled="!cart.length"
                     >
                       Proceder al Pago
                     </button>
                   </router-link>
-
                   <router-link
                     to="/home-screen"
                     class="btn btn-outline-secondary w-100 mt-3"
@@ -192,77 +200,49 @@
 <script>
 import { defineComponent, ref, onMounted } from "vue";
 import MainHeader from "@/components/MainHeader.vue";
-// Datos de prueba
-const mockData = {
-  items: [
-    {
-      id: 1,
-      name: "Laptop Dell XPS 13",
-      provider: "Dell Computers",
-      price: 24999.99,
-      quantity: 1,
-      imageUrl: "https://picsum.photos/200",
-    },
-    {
-      id: 2,
-      name: "Monitor LG 27'",
-      provider: "LG Electronics",
-      price: 5999.99,
-      quantity: 2,
-      imageUrl: "https://picsum.photos/201",
-    },
-    {
-      id: 3,
-      name: "Teclado Mecánico Logitech",
-      provider: "Logitech",
-      price: 1499.99,
-      quantity: 1,
-      imageUrl: "https://picsum.photos/202",
-    },
-  ],
-  shippingAddress: {
-    address: "Av. Insurgentes Sur 1234, Ciudad de México, CDMX, 03100, México",
-   
-  },
-  totalItems: 4,
-  subtotal: 32499.97,
-  shipping: 150.0,
-  total: 32649.97,
-};
-
+import axios from "axios";
 export default defineComponent({
   name: "ShoppingCart",
 
   components: {
-    MainHeader, // Registro del componente
+    MainHeader,
   },
 
   setup() {
-    const cart = ref({
-      items: [],
-      shippingAddress: {
-        address: "",
-      },
-      totalItems: 0,
-      subtotal: 0,
-      shipping: 0,
-      total: 0,
-    });
+    const cart = ref([]);
+    const cartLenght = ref(0);
+    const subTotal = ref(0);
+    const showAddressForm = ref(false);
+    const user = JSON.parse(localStorage.getItem("userInfo"));
 
-    const showAddressForm = ref(false); // Controla la visibilidad del modal
-    const editAddress = ref({ ...cart.value.shippingAddress }); // Dirección editable
-
-    // Simular carga de datos
     const loadCart = async () => {
       try {
-        // Simulamos una llamada a la API
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        cart.value = mockData;
-        editAddress.value = { ...mockData.shippingAddress }; // Inicializamos el formulario
+        const response = await axios.get("/api/v1/cart/by-user/", {
+          params: { idCliente: user.idCliente },
+        });
+        cart.value = response.data;
+        cartLenght.value = cart.value.length;
+        getSubTotal()
       } catch (error) {
-        console.error("Error al cargar el carrito:", error);
+        if (error.response) {
+          let messageError = error.response.data.message;
+          toast(messageError, {
+            hideProgressBar: true,
+            autoClose: 1500,
+            type: "error",
+            theme: "colored",
+          });
+        }
       }
     };
+
+    const formatAddres = () => {
+      if (!user || !user.calle || !user.colonia || !user.numero || !user.codigoPostal) {
+        return "Dirección incompleta";
+      }
+      return `${user.calle} ${user.numero}, ${user.colonia}, CP ${user.codigoPostal}`;
+    }
+    const editAddress = ref(formatAddres());
 
     // Formatear precio
     const formatPrice = (price) =>
@@ -270,40 +250,81 @@ export default defineComponent({
         style: "currency",
         currency: "MXN",
       }).format(price);
+    
+    const getSubTotal = async () => {
+      console.log(user.carrito.idCarrito)
+      try {
+        const response = await axios.get("/api/v1/cart/get-total/", {
+          params: { idCarrito: user.carrito.idCarrito }
+        })
+        if (response) {
+          subTotal.value = parseFloat(response.data).toFixed(2);
+        }
+      } catch (error) {
+        if (error.response) {
+          let messageError = error.response.data.message;
+          toast(messageError, {
+            hideProgressBar: true,
+            autoClose: 1500,
+            type: "error",
+            theme: "colored",
+          });
+        }
+      }
+    }
 
     // Actualizar cantidad de un producto
-    const updateQuantity = () => {
-      cart.value.subtotal = cart.value.items.reduce(
-        (total, item) => total + item.price * item.quantity,
-        0
-      );
-      cart.value.total = cart.value.subtotal + cart.value.shipping;
-      cart.value.totalItems = cart.value.items.reduce(
-        (total, item) => total + item.quantity,
-        0
-      );
-    };
-
-    const increaseQuantity = (item) => {
-      item.quantity++;
-      updateQuantity();
-    };
-
-    const decreaseQuantity = (item) => {
-      if (item.quantity > 1) {
-        item.quantity--;
-        updateQuantity();
+    const updateQuantity = async (item) => {
+      item['carrito'] = user.carrito;
+      try {
+        const response = await axios.post("/api/v1/cart/update", item)
+        if (response ) {
+          loadCart()
+          getSubTotal()
+        }
+      } catch (error) {
+        if (error.response) {
+          let messageError = error.response.data.message;
+          toast(messageError, {
+            hideProgressBar: true,
+            autoClose: 1500,
+            type: "error",
+            theme: "colored",
+          });
+        }
       }
     };
 
-    const removeItem = (itemId) => {
-      cart.value.items = cart.value.items.filter((item) => item.id !== itemId);
-      if (cart.value.items.length > 0) {
-        updateQuantity();
-      } else {
-        cart.value.totalItems = 0;
-        cart.value.subtotal = 0;
-        cart.value.total = 0;
+    const increaseQuantity = (item) => {
+      item.cantidad++;
+      updateQuantity(item);
+    };
+
+    const decreaseQuantity = (item) => {
+      if (item.cantidad > 1) {
+        item.cantidad--;
+      }
+      updateQuantity(item);
+    };
+
+    const removeItem = async (item) => {
+      item['carrito'] = user.carrito;
+      try {
+        const response = await axios.post("/api/v1/cart/remove", item)
+        if (response ) {
+          loadCart()
+          getSubTotal()
+        }
+      } catch (error) {
+        if (error.response) {
+          let messageError = error.response.data.message;
+          toast(messageError, {
+            hideProgressBar: true,
+            autoClose: 1500,
+            type: "error",
+            theme: "colored",
+          });
+        }
       }
     };
 
@@ -315,6 +336,8 @@ export default defineComponent({
 
     return {
       cart,
+      cartLenght,
+      subTotal,
       showAddressForm,
       editAddress,
       formatPrice,
