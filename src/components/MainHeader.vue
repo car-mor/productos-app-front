@@ -4,57 +4,27 @@
       <h1 class="logo">ElectroShop</h1>
 
       <nav>
-      <ul class="nav-menu">
-        <li>
-          <router-link 
-            to="/home-screen" 
-            class="text-dark text-decoration-none p-2 d-inline-block link-hover"
-          >
-            <h6>Inicio</h6>
-          </router-link>
-        </li>
-        <!-- Menú desplegable de categorías -->
-        <li class="dropdown">
-          <a 
-            href="#" 
-            class="nav-link text-dark text-decoration-none p-2 d-inline-block link-hover" 
-            @click.prevent="toggleDropdown"
-          >
-            Categorías
-            <span :class="['arrow', { open: isDropdownOpen }]">↓</span>
-          </a>
-          <ul v-if="isDropdownOpen" class="dropdown-menu">
-            <li 
-              v-if="categories.length === 0" 
-              class="dropdown-item empty-state"
+        <ul class="nav-menu">
+          <li>
+            <router-link 
+              to="/home-screen" 
+              class="text-dark text-decoration-none p-2 d-inline-block link-hover"
             >
-              No hay categorías disponibles
-            </li>
-            <li
-              v-else
-              v-for="category in categories"
-              :key="category.idCategoria"
+              <h6>Inicio</h6>
+            </router-link>
+          </li>
+          <li>
+            <a 
+              href="#" 
+              class="nav-link text-dark text-decoration-none p-2 d-inline-block link-hover"
+              @click.prevent="toggleContactModal"
             >
-              <a 
-                :href="'/categorias/' + category.id" 
-                class="dropdown-item text-dark text-decoration-none p-2 d-inline-block link-hover"
-              >
-                {{ category.nombreCategoria }}
-              </a>
-            </li>
-          </ul>
-        </li>
-        <li>
-          <a 
-            href="#" 
-            class="nav-link text-dark text-decoration-none p-2 d-inline-block link-hover"
-            @click.prevent="toggleContactModal"
-          >
-            Contacto
-          </a>
-        </li>
-      </ul>
-    </nav>
+              Contacto
+            </a>
+          </li>
+        </ul>
+      </nav>
+
       <div class="actions-group">
         <div class="search-bar" v-if="isSearchBarEnabled">
           <input
@@ -66,44 +36,35 @@
           <SearchIcon class="search-icon" />
         </div>
 
-        <!-- UserIcon con menú condicional -->
-        <div class="user-actions">
-          <div class="icon-button" @click="toggleUserMenu">
-            <UserIcon />
-          </div>
-          <ul :class="['dropdown-menu', { show: isUserMenuOpen }]">
-            <li v-if="isLogged">
-              <router-link to="/perfil-usuario" class="dropdown-item">
-                Mi Perfil
-              </router-link>
-            </li>
-            <li v-if="isLogged">
-              <router-link to="/perfil-usuario" class="dropdown-item" @click="logout">
-                Cerrar Sesión
-              </router-link>
-            </li>
-            <li v-else>
-              <router-link to="/inicio-sesion" class="dropdown-item">
-                Iniciar Sesión
-              </router-link>
-            </li>
-          </ul>
-          <RouterLink to="/carrito-compras">
-            <button class="icon-button cart-button">
-              <ShoppingCartIcon />
-              <span class="cart-count">{{ cartItemsCount }}</span>
-            </button>
-          </RouterLink>
-        </div>
+        <!-- UserIcon con opción condicional -->
+        <div class="actions-group">
+          <div class="user-actions">
+            <RouterLink :to="isLogged ? '/perfil-usuario' : '/inicio-sesion'">
+              <button class="icon-button user-button">
+                <UserIcon />
+                <span class="user-text">{{ isLogged ? 'Mi Perfil' : 'Iniciar Sesión' }}</span>
+              </button>
+            </RouterLink>
 
+            <!-- Carrito -->
+            <RouterLink to="/carrito-compras">
+              <button class="icon-button cart-button">
+                <ShoppingCartIcon />
+                <span class="cart-count">{{ cartItemsCount }}</span>
+                <span class="cart-text">Mi carrito</span>
+              </button>
+            </RouterLink>
+          </div>
+        </div>
       </div>
     </div>
   </header>
+
+  <!-- Modal de Contacto -->
   <div 
-      v-if="showContactModal" 
-      class="contact-dropdown mt-3 shadow-lg border-0 p-4 w-50"
-    >
-    <!-- Encabezado del Modal -->
+    v-if="showContactModal" 
+    class="contact-dropdown mt-3 shadow-lg border-0 p-4 w-50"
+  >
     <div class="modal-header bg-primary text-white border-0 rounded-top position-relative p-2">
       <h5 class="modal-title d-flex align-items-center fw-bold mb-0">
         <i class="bi bi-people-fill me-2"></i>
@@ -146,8 +107,7 @@
         </div>
       </div>
     </div>
-    <div class="modal-footer bg-light">
-    </div>
+    <div class="modal-footer bg-light"></div>
   </div>
 </template>
 
@@ -157,48 +117,26 @@ import { SearchIcon, ShoppingCartIcon, UserIcon } from "lucide-vue-next";
 import axios from "axios";
 
 let searchQuery = ref("");
-let isDropdownOpen = ref(false);
 let isSearchBarEnabled = ref(true);
-let categories = ref([]);
-let isUserMenuOpen = ref(false);
-
-const toggleDropdown = () => {
-  isDropdownOpen.value = !isDropdownOpen.value;
-};
-
-const toggleUserMenu = () => {
-  isUserMenuOpen.value = !isUserMenuOpen.value;
-};
-const cartItemsCount = ref(1)
+let cartItemsCount = ref(1);
 
 const user = JSON.parse(localStorage.getItem("userInfo"));
+const isLogged = JSON.parse(localStorage.getItem("isLogged"));
 
-const fetchCategories = async () => {
-  try {
-    const response = await axios.get("/api/v1/categorias");
-    categories.value = response.data;
-  } catch (error) {
-    console.error("Error al cargar las categorías:", error);
-    categories.value = [];
-  }
-};
-
-const counItemsCarrito = async () => {
+const fetchCartItemsCount = async () => {
   try {
     const response = await axios.get("/api/v1/cart/count-items/", {
       params: { idCarrito: user.carrito.idCarrito }
     });
     cartItemsCount.value = response.data;
-    console.log(cartItemsCount)
   } catch (error) {
     console.error("Error al contar los items del carrito:", error);
     cartItemsCount.value = 0;
   }
-}
+};
 
 onMounted(() => {
-  fetchCategories();
-  counItemsCarrito();
+  fetchCartItemsCount();
 });
 
 const contacts = ref([
@@ -208,18 +146,14 @@ const contacts = ref([
   { name: "Gerardo Uriel Ortiz Ramírez", email: "gortizr2001@alumno.ipn.mx" },
 ]);
 
-// Controlador para mostrar/ocultar el modal
 const showContactModal = ref(false);
-
 const toggleContactModal = () => {
   showContactModal.value = !showContactModal.value;
 };
-
 </script>
 
-
 <style scoped>
-/* Estilos principales del header */
+/* Estilos para el header, búsqueda y botones */
 .header {
   width: 100%;
   background-color: #ffffff;
@@ -329,6 +263,10 @@ const toggleContactModal = () => {
   position: relative;
 }
 
+.user-button {
+  position: relative;
+}
+
 .cart-count {
   position: absolute;
   top: -0.5rem;
@@ -344,103 +282,41 @@ const toggleContactModal = () => {
   justify-content: center;
 }
 
-/* Responsive para tabletas */
-@media (max-width: 1024px) {
-  .search-bar {
-    width: 200px;
-  }
-}
-
-/* Responsive para móviles */
-@media (max-width: 768px) {
-  .header-container {
-    flex-wrap: wrap;
-    gap: 1rem;
-  }
-
-  .nav-menu {
-    order: 3;
-    width: 100%;
-    justify-content: space-around;
-  }
-
-  .actions-group {
-    flex-grow: 1;
-    justify-content: flex-end;
-  }
-}
-
-/* Estilo del menú desplegable */
-.dropdown {
-  position: relative;
-  display: inline-block;
-}
-
-.dropdown-menu {
-  position: absolute;
-  top: 3rem;
-  right: 0;
-  background-color: white;
-  border: 1px solid #e5e7eb;
-  border-radius: 0.5rem;
-  padding: 0.5rem 0;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  z-index: 1000;
-  list-style: none;
-  width: 200px;
-  margin-top: 0.5rem;
-  display: none; /* Se mostrará cuando el menú sea abierto */
-}
-
-.dropdown-item {
-  padding: 0.5rem 1rem;
-  text-decoration: none;
+.cart-text {
+  margin-left: 0.5rem;
+  font-size: 0.875rem;
   color: #4b5563;
-  display: block;
-  border-radius: 0.25rem;
-  cursor: pointer;
-  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.dropdown-item:hover {
-  background-color: #f3f4f6;
+.user-text {
+  margin-left: 0.5rem;
+  font-size: 0.875rem;
+  color: #4b5563;
+}
+
+.user-info {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.user-info a {
   color: #2563eb;
+  text-decoration: none;
 }
 
-.empty-state {
-  color: #9ca3af;
-  text-align: center;
-  font-style: italic;
+.user-info a:hover {
+  text-decoration: underline;
 }
 
-.arrow {
-  display: inline-block;
-  margin-left: 0.25rem;
-  transition: transform 0.3s ease;
-}
-
-.arrow.open {
-  transform: rotate(180deg);
-}
-
-.link-hover:hover {
-  background-color: #e3f2fd;
-  border-radius: 0.25rem;
-  color: #0d6efd !important;
-}
-
-/* Mostrar el menú desplegable cuando se active */
-.dropdown-menu.show {
-  display: block;
-}
-
+/* Estilos del modal de contacto */
 .contact-dropdown {
   position: absolute;
   top: 60px;
   right: 0;
-  width: 50%;
   background-color: white;
-  border-radius: 5px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   z-index: 1000;
 }
 </style>

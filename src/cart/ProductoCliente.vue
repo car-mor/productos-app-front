@@ -1,107 +1,110 @@
 <template>
-  <div v-if="product" class="container py-4">
-    <div class="row h-100">
-      <!-- Columna de la imagen -->
-      <div class="col-md-6 mb-4 h-100">
-        <img
-          :src="product.imagenUrl || defaultImage"
-          :alt="product.nombreProducto"
-          class="img-fluid rounded"
-        />
+  <div>
+    <MainHeader />
+    <div v-if="product" class="container py-4">
+      <div class="row h-100">
+        <!-- Columna de la imagen -->
+        <div class="col-md-6 mb-4 h-100">
+          <img
+            :src="product.imagenUrl || defaultImage"
+            :alt="product.nombreProducto"
+            class="img-fluid rounded"
+          />
 
-        <!-- Miniaturas adicionales solo si hay más de una imagen -->
-        <div
-          v-if="product.additionalImages && product.additionalImages.length > 0"
-          class="d-flex mt-3 gap-2"
-        >
+          <!-- Miniaturas adicionales solo si hay más de una imagen -->
           <div
-            v-for="(image, index) in product.additionalImages"
-            :key="index"
-            class="thumbnail-container"
-            style="width: 80px; height: 80px"
+            v-if="product.additionalImages && product.additionalImages.length > 0"
+            class="d-flex mt-3 gap-2"
           >
-            <img
-              :src="image"
-              :alt="product.name"
-              class="img-thumbnail"
-              style="
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-                cursor: pointer;
-              "
-              @click="setMainImage(image)"
-            />
+            <div
+              v-for="(image, index) in product.additionalImages"
+              :key="index"
+              class="thumbnail-container"
+              style="width: 80px; height: 80px"
+            >
+              <img
+                :src="image"
+                :alt="product.name"
+                class="img-thumbnail"
+                style="
+                  width: 100%;
+                  height: 100%;
+                  object-fit: cover;
+                  cursor: pointer;
+                "
+                @click="setMainImage(image)"
+              />
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Columna de detalles -->
-      <div class="col-md-6">
-        <h2 class="mb-2">{{ product.nombreProducto }}</h2>
-        <p class="text-muted mb-3">de {{ product.proveedor.nombreProveedor }}</p>
+        <!-- Columna de detalles -->
+        <div class="col-md-6">
+          <h2 class="mb-2">{{ product.nombreProducto }}</h2>
+          <p class="text-muted mb-3">de {{ product.proveedor.nombreProveedor }}</p>
 
-        <div class="fs-3 fw-bold text-primary mb-4">
-          {{ formatPrice(product.precioUnitario) }}
-        </div>
+          <div class="fs-3 fw-bold text-primary mb-4">
+            {{ formatPrice(product.precioUnitario) }}
+          </div>
 
-        <!-- Stock status -->
-        <div class="mb-4">
-          <span v-if="product.stock > 0" class="badge bg-success">En stock</span>
-          <span v-else class="badge bg-danger">Agotado</span>
-        </div>
+          <!-- Stock status -->
+          <div class="mb-4">
+            <span v-if="product.stock > 0" class="badge bg-success">En stock</span>
+            <span v-else class="badge bg-danger">Agotado</span>
+          </div>
 
-        <!-- Cantidad y botón de agregar al carrito -->
-        <div class="mb-4">
-          <label for="quantity" class="form-label">Cantidad:</label>
-          <div class="d-flex gap-3 align-items-center">
-            <div class="input-group" style="width: 140px">
+          <!-- Cantidad y botón de agregar al carrito -->
+          <div class="mb-4">
+            <label for="quantity" class="form-label">Cantidad:</label>
+            <div class="d-flex gap-3 align-items-center">
+              <div class="input-group" style="width: 140px">
+                <button
+                  class="btn btn-outline-secondary"
+                  type="button"
+                  @click="decreaseQuantity"
+                  :disabled="quantity <= 1"
+                >
+                  <i class="bi bi-dash"></i>
+                </button>
+                <input
+                  type="number"
+                  class="form-control text-center"
+                  id="quantity"
+                  v-model.number="quantity"
+                  min="1"
+                  readonly
+                  :max="product.stock"
+                />
+                <button
+                  class="btn btn-outline-secondary"
+                  type="button"
+                  @click="increaseQuantity"
+                  :disabled="quantity >= product.stock"
+                >
+                  <i class="bi bi-plus"></i>
+                </button>
+              </div>
+
               <button
-                class="btn btn-outline-secondary"
-                type="button"
-                @click="decreaseQuantity"
-                :disabled="quantity <= 1"
+                class="btn btn-primary"
+                @click="addToCart"
+                :disabled="product.stock <= 0"
               >
-                <i class="bi bi-dash"></i>
-              </button>
-              <input
-                type="number"
-                class="form-control text-center"
-                id="quantity"
-                v-model.number="quantity"
-                min="1"
-                readonly
-                :max="product.stock"
-              />
-              <button
-                class="btn btn-outline-secondary"
-                type="button"
-                @click="increaseQuantity"
-                :disabled="quantity >= product.stock"
-              >
-                <i class="bi bi-plus"></i>
+                Agregar al carrito
               </button>
             </div>
+          </div>
 
-            <button
-              class="btn btn-primary"
-              @click="addToCart"
-              :disabled="product.stock <= 0"
-            >
-              Agregar al carrito
-            </button>
+          <!-- Descripción -->
+          <div class="mt-4">
+            <h5>Descripción</h5>
+            <p>{{ product.descripcionProducto }}</p>
           </div>
         </div>
-
-        <!-- Descripción -->
-        <div class="mt-4">
-          <h5>Descripción</h5>
-          <p>{{ product.descripcionProducto }}</p>
-        </div>
       </div>
+      <!-- Componente de reseñas -->
+      <ResenasProducto :productId="product.idProducto" />
     </div>
-    <!-- Componente de reseñas -->
-    <ResenasProducto :productId="product.idProducto" />
   </div>
 </template>
 
@@ -111,11 +114,13 @@ import ResenasProducto from "@/cart/ResenasProducto.vue";
 import axios from "axios";
 import { useRoute, useRouter } from 'vue-router';
 import { toast } from 'vue3-toastify'
+import MainHeader from "@/components/MainHeader.vue";
 
 export default defineComponent({
   name: "ProductDetail",
   components: {
     ResenasProducto,
+    MainHeader
   },
 
   setup() {

@@ -25,665 +25,480 @@
     </div>
 
     <div class="card shadow-lg rounded-4 p-4 border-0 bg-light">
-      <div
-        class="d-flex justify-content-between align-items-center flex-wrap gap-3"
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+      <!-- Botón para agregar un nuevo producto -->
+      <button
+        class="btn btn-outline-primary d-flex align-items-center gap-2"
+        data-bs-toggle="modal"
+        data-bs-target="#productModal"
+        @click="openAddProductModal"
       >
-        <!-- Botón para agregar un nuevo producto -->
-        <button
-          class="btn btn-outline-primary d-flex align-items-center gap-2"
-          data-bs-toggle="modal"
-          data-bs-target="#productModal"
-          @click="openAddProductModal"
-        >
-          <i class="bi bi-plus-circle fs-5"></i>
-          <span>Agregar Producto</span>
-        </button>
+        <i class="bi bi-plus-circle fs-5"></i>
+        <span>Agregar Producto</span>
+      </button>
 
-        <!-- Botón para agregar nueva categoría -->
-        <button
-          class="btn btn-outline-success d-flex align-items-center gap-2"
-          data-bs-toggle="modal"
-          data-bs-target="#categoryModal"
-          @click="openAddCategoryModal"
-        >
-          <i class="bi bi-folder-plus fs-5"></i>
-          <span>Agregar Categoría</span>
-        </button>
+      <!-- Botón para agregar nueva categoría -->
+      <button
+        class="btn btn-outline-success d-flex align-items-center gap-2"
+        data-bs-toggle="modal"
+        data-bs-target="#categoryModal"
+        @click="openAddCategoryModal"
+      >
+        <i class="bi bi-folder-plus fs-5"></i>
+        <span>Agregar Categoría</span>
+      </button>
 
-        <!-- Botón para agregar un nuevo proveedor -->
-        <button
-          class="btn btn-primary me-4 mb-4 px-4"
-          data-bs-toggle="modal"
-          data-bs-target="#providerModal"
-          @click="openAddProviderModal"
-        >
-          <i class="bi bi-building-add me-2"></i>Agregar Proveedor
-        </button>
+      <!-- Botón para agregar un nuevo proveedor -->
+      <button
+        class="btn btn-outline-info d-flex align-items-center gap-2"
+        data-bs-toggle="modal"
+        data-bs-target="#providerModal"
+        @click="openAddProviderModal"
+      >
+        <i class="bi bi-building-add fs-5"></i>
+        <span>Agregar Proveedor</span>
+      </button>
+    </div>
+  </div>
 
-        <!-- Tabla de productos (actualizada con categoría)-->
-        <div class="table-responsive shadow-sm rounded">
-          <table class="table table-hover table-bordered mb-0">
-            <thead class="table-dark">
+    <!-- Tabla de productos -->
+    <div class="card shadow-lg rounded-4 border-0">
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-striped table-hover align-middle text-center mb-0">
+              <thead>
               <tr>
-                <th class="text-center" style="width: 80px">Foto</th>
-                <th style="min-width: 200px">Nombre</th>
-                <th style="min-width: 180px">Descripcion</th>
-                <th style="min-width: 180px">Proveedor</th>
-                <th style="min-width: 150px">Categoría</th>
-                <th style="min-width: 120px">Precio</th>
-                <th style="min-width: 150px">Stock</th>
-                <th style="min-width: 150px">Estado</th>
-                <th style="min-width: 200px">Acciones</th>
+                <th class="text-center align-middle" style="width: 80px; background-color: #87CEEB; color: white;">
+                  <i class="bi bi-image"></i> Foto
+                </th>
+                <th class="align-middle" style="background-color: #87CEEB; color: white;">
+                  <i class="bi bi-tag"></i> Nombre
+                </th>
+                <th class="align-middle" style="background-color: #87CEEB; color: white;">
+                  <i class="bi bi-card-text"></i> Descripción
+                </th>
+                <th class="align-middle" style="background-color: #87CEEB; color: white;">
+                  <i class="bi bi-person-circle"></i> Proveedor
+                </th>
+                <th class="align-middle" style="background-color: #87CEEB; color: white;">
+                  <i class="bi bi-list"></i> Categoría
+                </th>
+                <th class="align-middle text-end" style="background-color: #87CEEB; color: white;">
+                  <i class="bi bi-currency-dollar"></i> Precio
+                </th>
+                <th class="align-middle text-end" style="background-color: #87CEEB; color: white;">
+                  <i class="bi bi-box"></i> Stock
+                </th>
+                <th class="align-middle text-center" style="background-color: #87CEEB; color: white;">
+                  <i class="bi bi-check-circle"></i> Estado
+                </th>
+                <th class="align-middle text-center" style="background-color: #87CEEB; color: white;">
+                  <i class="bi bi-tools"></i> Acciones
+                </th>
               </tr>
             </thead>
             <tbody>
-              <tr
-                v-for="product in products"
-                :key="product.idProducto"
+              <tr 
+                v-for="product in products" 
+                :key="product.idProducto" 
                 :class="{ 'table-danger': product.stock === 0 }"
               >
-                <td class="text-center">
-                  <img
-                    :src="product.imagenUrl"
-                    alt="Foto"
-                    class="rounded"
-                    style="width: 60px; height: 60px; object-fit: cover"
+                <td>
+                  <img 
+                    :src="product.imagenUrl" 
+                    alt="Foto" 
+                    class="rounded-circle border border-secondary" 
+                    style="width: 60px; height: 60px; object-fit: cover;"
                   />
                 </td>
-                <td class="align-middle fw-semibold">
-                  {{ product.nombreProducto }}
+                <td class="fw-bold">{{ product.nombreProducto }}</td>
+                <td class="text-truncate" style="max-width: 180px;" title="{{ product.descripcionProducto }}">
+                  {{ product.descripcionProducto }}
                 </td>
-                <td class="align-middle">{{ product.descripcionProducto }}</td>
-                <td class="align-middle">
-                  <div class="d-flex align-items-center">
+                <td>
+                  <div class="d-flex justify-content-center align-items-center">
                     {{ product.proveedor.nombreProveedor }}
-                    <button
-                      class="btn btn-sm btn-outline-info ms-2"
-                      data-bs-toggle="modal"
-                      data-bs-target="#providerDetailsModal"
-                      @click="
-                        openProviderDetails(product.proveedor.nombreProveedor)
-                      "
+                    <button 
+                      class="btn btn-sm btn-outline-light ms-2" 
+                      data-bs-toggle="modal" 
+                      data-bs-target="#providerDetailsModal" 
+                      @click="openProviderDetails(product.proveedor.nombreProveedor)"
                       title="Ver detalles del proveedor"
                     >
-                      <i class="bi bi-info-circle"></i>
+                      <i class="bi bi-info-circle text-primary"></i>
                     </button>
                   </div>
                 </td>
-                <td class="align-middle">
-                  {{ product.categoria.nombreCategoria }}
-                </td>
-                <td class="align-middle">
-                  ${{ product.precioUnitario.toLocaleString() }}
-                </td>
-                <td class="align-middle">
-                  <div class="input-group">
-                    <input
-                      type="number"
-                      class="form-control form-control-sm"
-                      v-model.number="product.stock"
-                      readonly
+                <td>{{ product.categoria.nombreCategoria }}</td>
+                <td>${{ product.precioUnitario.toLocaleString() }}</td>
+                <td>
+                  <div class="input-group input-group-sm">
+                    <input 
+                      type="number" 
+                      class="form-control" 
+                      v-model.number="product.stock" 
+                      readonly 
                       @change="updateProductStock(product)"
                     />
                     <span class="input-group-text">unids.</span>
                   </div>
                 </td>
-                <td class="align-middle text-center">
-                  <div class="d-flex justify-content-center align-items-center">
-                    <span
-                      class="badge"
-                      :class="{
-                        'bg-success': product.activo === true,
-                        'bg-danger': product.activo === false,
-                      }"
-                    >
-                      {{ product.activo ? "Activo" : "Inactivo" }}
-                    </span>
-                  </div>
-                </td>
-                <td class="align-middle text-center">
-                  <button
-                    class="btn btn-warning btn-sm"
-                    data-bs-toggle="modal"
-                    data-bs-target="#productModal"
-                    @click="openEditProductModal(product)"
+                <td>
+                  <span 
+                    class="badge" 
+                    :class="{
+                      'bg-success': product.activo,
+                      'bg-danger': !product.activo
+                    }"
                   >
-                    <i class="bi bi-pencil me-1"></i>Editar
-                  </button>
+                    {{ product.activo ? 'Activo' : 'Inactivo' }}
+                  </span>
+                </td>
+                <td>
+                  <div class="btn-group">
+                    <button 
+                      class="btn btn-sm btn-warning" 
+                      data-bs-toggle="modal" 
+                      data-bs-target="#productModal" 
+                      @click="openEditProductModal(product)"
+                    >
+                      <i class="bi bi-pencil me-1"></i>Editar
+                    </button>
+                  </div>
                 </td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
-
-      <!-- Tabla de productos -->
-      <div class="card shadow-lg rounded-4 border-0">
-        <div class="card-body p-0">
-          <div class="table-responsive">
-            <table
-              class="table table-striped table-hover align-middle text-center mb-0"
-            >
-              <thead>
-                <tr>
-                  <th
-                    class="text-center align-middle"
-                    style="width: 80px; background-color: #87ceeb; color: white"
-                  >
-                    <i class="bi bi-image"></i> Foto
-                  </th>
-                  <th
-                    class="align-middle"
-                    style="background-color: #87ceeb; color: white"
-                  >
-                    <i class="bi bi-tag"></i> Nombre
-                  </th>
-                  <th
-                    class="align-middle"
-                    style="background-color: #87ceeb; color: white"
-                  >
-                    <i class="bi bi-card-text"></i> Descripción
-                  </th>
-                  <th
-                    class="align-middle"
-                    style="background-color: #87ceeb; color: white"
-                  >
-                    <i class="bi bi-person-circle"></i> Proveedor
-                  </th>
-                  <th
-                    class="align-middle"
-                    style="background-color: #87ceeb; color: white"
-                  >
-                    <i class="bi bi-list"></i> Categoría
-                  </th>
-                  <th
-                    class="align-middle text-end"
-                    style="background-color: #87ceeb; color: white"
-                  >
-                    <i class="bi bi-currency-dollar"></i> Precio
-                  </th>
-                  <th
-                    class="align-middle text-end"
-                    style="background-color: #87ceeb; color: white"
-                  >
-                    <i class="bi bi-box"></i> Stock
-                  </th>
-                  <th
-                    class="align-middle text-center"
-                    style="background-color: #87ceeb; color: white"
-                  >
-                    <i class="bi bi-check-circle"></i> Estado
-                  </th>
-                  <th
-                    class="align-middle text-center"
-                    style="background-color: #87ceeb; color: white"
-                  >
-                    <i class="bi bi-tools"></i> Acciones
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr
-                  v-for="product in products"
-                  :key="product.idProducto"
-                  :class="{ 'table-danger': product.stock === 0 }"
-                >
-                  <td>
-                    <img
-                      :src="product.imagenUrl"
-                      alt="Foto"
-                      class="rounded-circle border border-secondary"
-                      style="width: 60px; height: 60px; object-fit: cover"
-                    />
-                  </td>
-                  <td class="fw-bold">{{ product.nombreProducto }}</td>
-                  <td
-                    class="text-truncate"
-                    style="max-width: 180px"
-                    title="{{ product.descripcionProducto }}"
-                  >
-                    {{ product.descripcionProducto }}
-                  </td>
-                  <td>
-                    <div
-                      class="d-flex justify-content-center align-items-center"
-                    >
-                      {{ product.proveedor.nombreProveedor }}
-                      <button
-                        class="btn btn-sm btn-outline-light ms-2"
-                        data-bs-toggle="modal"
-                        data-bs-target="#providerDetailsModal"
-                        @click="
-                          openProviderDetails(product.proveedor.nombreProveedor)
-                        "
-                        title="Ver detalles del proveedor"
-                      >
-                        <i class="bi bi-info-circle text-primary"></i>
-                      </button>
-                    </div>
-                  </td>
-                  <td>{{ product.categoria.nombreCategoria }}</td>
-                  <td>${{ product.precioUnitario.toLocaleString() }}</td>
-                  <td>
-                    <div class="input-group input-group-sm">
-                      <input
-                        type="number"
-                        class="form-control"
-                        v-model.number="product.stock"
-                        readonly
-                        @change="updateProductStock(product)"
-                      />
-                      <span class="input-group-text">unids.</span>
-                    </div>
-                  </td>
-                  <td>
-                    <span
-                      class="badge"
-                      :class="{
-                        'bg-success': product.activo,
-                        'bg-danger': !product.activo,
-                      }"
-                    >
-                      {{ product.activo ? "Activo" : "Inactivo" }}
-                    </span>
-                  </td>
-                  <td>
-                    <div class="btn-group">
-                      <button
-                        class="btn btn-sm btn-warning"
-                        data-bs-toggle="modal"
-                        data-bs-target="#productModal"
-                        @click="openEditProductModal(product)"
-                      >
-                        <i class="bi bi-pencil me-1"></i>Editar
-                      </button>
-                      <button
-                        class="btn btn-sm btn-danger"
-                        @click="confirmDelete(product)"
-                      >
-                        <i class="bi bi-trash me-1"></i>Eliminar
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-        <div class="card-footer text-muted text-center">
-          Total de productos: {{ products.length }}
-        </div>
+      <div class="card-footer text-muted text-center">
+        Total de productos: {{ products.length }}
       </div>
+    </div>
 
-      <!-- Modal para editar o agregar producto (actualizado con categoría y descrpción del producto) -->
-      <div
-        class="modal fade"
-        id="productModal"
-        tabindex="-1"
-        aria-labelledby="productModalLabel"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog modal-lg">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="productModalLabel">
-                {{
-                  currentProduct.idProducto
-                    ? "Editar Producto"
-                    : "Agregar Producto"
-                }}
-              </h5>
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <form @submit.prevent="saveProduct">
-              <div class="modal-body">
-                <!-- Primera fila -->
-                <div class="row mb-3">
-                  <div class="col-md-4">
-                    <label for="name" class="form-label">Nombre</label>
-                    <input
-                      v-model="currentProduct.nombreProducto"
-                      type="text"
-                      class="form-control"
-                      id="name"
-                      required
-                    />
-                  </div>
-                  <div class="col-md-4">
-                    <label for="photo" class="form-label">Foto URL</label>
-                    <input
-                      v-model="currentProduct.imagenUrl"
-                      type="url"
-                      class="form-control"
-                      id="photo"
-                      required
-                    />
-                  </div>
-                  <div class="col-md-4">
-                    <label for="description" class="form-label"
-                      >Descripción</label
-                    >
-                    <input
-                      v-model="currentProduct.descripcionProducto"
-                      type="text"
-                      class="form-control"
-                      id="description"
-                      required
-                    />
-                  </div>
-                </div>
 
-                <!-- Segunda fila -->
-                <div class="row mb-3">
-                  <div class="col-md-4">
-                    <label for="provider" class="form-label">Proveedor</label>
-                    <select
-                      v-model="currentProduct.proveedor"
-                      class="form-select"
-                      id="provider"
-                      required
-                    >
-                      <option
-                        v-for="provider in providers"
-                        :key="provider.idProveedor"
-                        :value="provider"
-                      >
-                        {{ provider.nombreProveedor }}
-                      </option>
-                    </select>
-                  </div>
-                  <div class="col-md-4">
-                    <label for="category" class="form-label">Categoría</label>
-                    <select
-                      v-model="currentProduct.categoria"
-                      class="form-select"
-                      id="category"
-                      required
-                    >
-                      <option
-                        v-for="category in categories"
-                        :key="category.idCategoria"
-                        :value="category"
-                      >
-                        {{ category.nombreCategoria }}
-                      </option>
-                    </select>
-                  </div>
-                  <div class="col-md-4">
-                    <label for="status" class="form-label">Estado</label>
-                    <select
-                      v-model="currentProduct.activo"
-                      class="form-select"
-                      id="status"
-                      required
-                    >
-                      <option :value="true">Activo</option>
-                      <option :value="false">Inactivo</option>
-                    </select>
-                  </div>
-                </div>
-
-                <!-- Tercera fila -->
-                <div class="row">
-                  <div class="col-md-6">
-                    <label for="price" class="form-label">Precio</label>
-                    <div class="input-group">
-                      <span class="input-group-text">$</span>
-                      <input
-                        v-model.number="currentProduct.precioUnitario"
-                        type="number"
-                        class="form-control"
-                        id="price"
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div class="col-md-6">
-                    <label for="stock" class="form-label"
-                      >Cantidad en Stock</label
-                    >
-                    <div class="input-group">
-                      <input
-                        v-model.number="currentProduct.stock"
-                        type="number"
-                        class="form-control"
-                        id="stock"
-                        required
-                      />
-                      <span class="input-group-text">unidades</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="modal-footer">
-                <button
-                  type="button"
-                  class="btn btn-secondary"
-                  data-bs-dismiss="modal"
-                >
-                  Cancelar
-                </button>
-                <button type="submit" class="btn btn-primary">Guardar</button>
-              </div>
-            </form>
+    <!-- Modal para editar o agregar producto (actualizado con categoría y descrpción del producto) -->
+    <div
+      class="modal fade"
+      id="productModal"
+      tabindex="-1"
+      aria-labelledby="productModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="productModalLabel">
+              {{ currentProduct.idProducto ? "Editar Producto" : "Agregar Producto" }}
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
           </div>
-        </div>
-      </div>
-
-      <!-- Modal para agregar categoría -->
-      <div
-        class="modal fade"
-        id="categoryModal"
-        tabindex="-1"
-        aria-labelledby="categoryModalLabel"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="categoryModalLabel">
-                Agregar Categoría
-              </h5>
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <form @submit.prevent="saveCategory">
-              <div class="modal-body">
-                <div class="mb-3">
-                  <label for="categoryName" class="form-label"
-                    >Nombre Categoría</label
-                  >
+          <form @submit.prevent="saveProduct">
+            <div class="modal-body">
+              <!-- Primera fila -->
+              <div class="row mb-3">
+                <div class="col-md-4">
+                  <label for="name" class="form-label">Nombre</label>
                   <input
-                    v-model="newCategory.nombreCategoria"
+                    v-model="currentProduct.nombreProducto"
                     type="text"
                     class="form-control"
-                    id="categoryName"
+                    id="name"
                     required
                   />
                 </div>
-              </div>
-              <div class="modal-body">
-                <div class="mb-3">
-                  <label for="categoryName" class="form-label"
-                    >Descripción Categoría</label
-                  >
+                <div class="col-md-4">
+                  <label for="photo" class="form-label">Foto URL</label>
                   <input
-                    v-model="newCategory.descripcionCategoria"
-                    type="text"
-                    class="form-control"
-                    id="categoryName"
-                    required
-                  />
-                </div>
-              </div>
-              <div class="modal-footer">
-                <button
-                  type="button"
-                  class="btn btn-secondary"
-                  data-bs-dismiss="modal"
-                >
-                  Cancelar
-                </button>
-                <button
-                  type="submit"
-                  class="btn btn-primary"
-                  data-bs-dismiss="modal"
-                >
-                  Guardar
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-
-      <!-- Modal para agregar proveedor -->
-      <div
-        class="modal fade"
-        id="providerModal"
-        tabindex="-1"
-        aria-labelledby="providerModalLabel"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="providerModalLabel">
-                Agregar Proveedor
-              </h5>
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <form @submit.prevent="saveNewProvider">
-              <div class="modal-body">
-                <div class="mb-3">
-                  <label for="newProviderName" class="form-label">Nombre</label>
-                  <input
-                    v-model="newProvider.nombreProveedor"
-                    type="text"
-                    class="form-control"
-                    id="newProviderName"
-                    required
-                  />
-                </div>
-                <div class="mb-3">
-                  <label for="newProviderPhone" class="form-label"
-                    >Teléfono</label
-                  >
-                  <input
-                    v-model="newProvider.telefono"
-                    type="text"
-                    class="form-control"
-                    id="newProviderPhone"
-                    required
-                  />
-                </div>
-                <div class="mb-3">
-                  <label for="newProviderUrl" class="form-label">URL</label>
-                  <input
-                    v-model="newProvider.urlProveedor"
+                    v-model="currentProduct.imagenUrl"
                     type="url"
                     class="form-control"
-                    id="newProviderUrl"
+                    id="photo"
+                    required
+                  />
+                </div>
+                <div class="col-md-4">
+                  <label for="description" class="form-label">Descripción</label>
+                  <input
+                    v-model="currentProduct.descripcionProducto"
+                    type="text"
+                    class="form-control"
+                    id="description"
                     required
                   />
                 </div>
               </div>
-              <div class="modal-footer">
-                <button
-                  type="button"
-                  class="btn btn-secondary"
-                  data-bs-dismiss="modal"
-                >
-                  Cancelar
-                </button>
-                <button
-                  type="submit"
-                  class="btn btn-primary"
-                  data-bs-dismiss="modal"
-                >
-                  Guardar
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
 
-      <!-- Modal para detalles del proveedor (sactualizado) -->
-      <div
-        class="modal fade"
-        id="providerDetailsModal"
-        tabindex="-1"
-        aria-labelledby="providerDetailsModalLabel"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="providerDetailsModalLabel">
-                Detalles del Proveedor
-              </h5>
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div class="modal-body">
-              <div class="mb-3">
-                <label class="form-label fw-bold">Nombre:</label>
-                <p>{{ selectedProvider.nombreProveedor }}</p>
-              </div>
-              <div class="mb-3">
-                <label class="form-label fw-bold">Teléfono:</label>
-                <p>{{ selectedProvider.telefono }}</p>
-              </div>
-              <div class="mb-3">
-                <label class="form-label fw-bold">URL:</label>
-                <p>
-                  <a :href="selectedProvider.urlProveedor" target="_blank">{{
-                    selectedProvider.urlProveedor
-                  }}</a>
-                </p>
-              </div>
-              <div class="mb-3">
-                <label class="form-label fw-bold">Estado:</label>
-                <p>
-                  <span
-                    class="badge"
-                    :class="
-                      selectedProvider.activo ? 'bg-success' : 'bg-danger'
-                    "
+              <!-- Segunda fila -->
+              <div class="row mb-3">
+                <div class="col-md-4">
+                  <label for="provider" class="form-label">Proveedor</label>
+                  <select
+                    v-model="currentProduct.proveedor"
+                    class="form-select"
+                    id="provider"
+                    required
                   >
-                    {{ selectedProvider.activo ? "Activo" : "Inactivo" }}
-                  </span>
-                </p>
+                    <option
+                      v-for="provider in providers"
+                      :key="provider.idProveedor"
+                      :value="provider"
+                    >
+                      {{ provider.nombreProveedor }}
+                    </option>
+                  </select>
+                </div>
+                <div class="col-md-4">
+                  <label for="category" class="form-label">Categoría</label>
+                  <select
+                    v-model="currentProduct.categoria"
+                    class="form-select"
+                    id="category"
+                    required
+                  >
+                    <option
+                      v-for="category in categories"
+                      :key="category.idCategoria"
+                      :value="category"
+                    >
+                      {{ category.nombreCategoria }}
+                    </option>
+                  </select>
+                </div>
+                <div class="col-md-4">
+                  <label for="status" class="form-label">Estado</label>
+                  <select
+                    v-model="currentProduct.activo"
+                    class="form-select"
+                    id="status"
+                    required
+                  >
+                    <option :value="true">Activo</option>
+                    <option :value="false">Inactivo</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Tercera fila -->
+              <div class="row">
+                <div class="col-md-6">
+                  <label for="price" class="form-label">Precio</label>
+                  <div class="input-group">
+                    <span class="input-group-text">$</span>
+                    <input
+                      v-model.number="currentProduct.precioUnitario"
+                      type="number"
+                      class="form-control"
+                      id="price"
+                      required
+                    />
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label for="stock" class="form-label">Cantidad en Stock</label>
+                  <div class="input-group">
+                    <input
+                      v-model.number="currentProduct.stock"
+                      type="number"
+                      class="form-control"
+                      id="stock"
+                      required
+                    />
+                    <span class="input-group-text">unidades</span>
+                  </div>
+                </div>
               </div>
             </div>
             <div class="modal-footer">
-              <button
-                type="button"
-                class="btn btn-secondary"
-                data-bs-dismiss="modal"
-              >
-                Cerrar
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                Cancelar
+              </button>
+              <button type="submit" class="btn btn-primary">Guardar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal para agregar categoría -->
+    <div
+      class="modal fade"
+      id="categoryModal"
+      tabindex="-1"
+      aria-labelledby="categoryModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="categoryModalLabel">Agregar Categoría</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <form @submit.prevent="saveCategory">
+            <div class="modal-body">
+              <div class="mb-3">
+                <label for="categoryName" class="form-label">Nombre Categoría</label>
+                <input
+                  v-model="newCategory.nombreCategoria"
+                  type="text"
+                  class="form-control"
+                  id="categoryName"
+                  required
+                />
+              </div>
+            </div>
+            <div class="modal-body">
+              <div class="mb-3">
+                <label for="categoryName" class="form-label">Descripción Categoría</label>
+                <input
+                  v-model="newCategory.descripcionCategoria"
+                  type="text"
+                  class="form-control"
+                  id="categoryName"
+                  required
+                />
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                Cancelar
+              </button>
+              <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Guardar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal para agregar proveedor -->
+    <div
+      class="modal fade"
+      id="providerModal"
+      tabindex="-1"
+      aria-labelledby="providerModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="providerModalLabel">Agregar Proveedor</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <form @submit.prevent="saveNewProvider">
+            <div class="modal-body">
+              <div class="mb-3">
+                <label for="newProviderName" class="form-label">Nombre</label>
+                <input
+                  v-model="newProvider.nombreProveedor"
+                  type="text"
+                  class="form-control"
+                  id="newProviderName"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="newProviderPhone" class="form-label">Teléfono</label>
+                <input
+                  v-model="newProvider.telefono"
+                  type="text"
+                  class="form-control"
+                  id="newProviderPhone"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="newProviderUrl" class="form-label">URL</label>
+                <input
+                  v-model="newProvider.urlProveedor"
+                  type="url"
+                  class="form-control"
+                  id="newProviderUrl"
+                  required
+                />
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                Cancelar
+              </button>
+              <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">
+                Guardar
               </button>
             </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal para detalles del proveedor (sactualizado) -->
+    <div
+      class="modal fade"
+      id="providerDetailsModal"
+      tabindex="-1"
+      aria-labelledby="providerDetailsModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="providerDetailsModalLabel">
+              Detalles del Proveedor
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label class="form-label fw-bold">Nombre:</label>
+              <p>{{ selectedProvider.nombreProveedor }}</p>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-bold">Teléfono:</label>
+              <p>{{ selectedProvider.telefono }}</p>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-bold">URL:</label>
+              <p>
+                <a :href="selectedProvider.urlProveedor" target="_blank">{{
+                  selectedProvider.urlProveedor
+                }}</a>
+              </p>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-bold">Estado:</label>
+              <p>
+                <span
+                  class="badge"
+                  :class="selectedProvider.activo ? 'bg-success' : 'bg-danger'"
+                >
+                  {{ selectedProvider.activo ? "Activo" : "Inactivo" }}
+                </span>
+              </p>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+              Cerrar
+            </button>
           </div>
         </div>
       </div>
@@ -783,7 +598,7 @@ export default {
         precioUnitario: 0,
         stock: 0,
         activo: false,
-      };
+      }
     },
     openAddCategoryModal() {
       this.newCategory = {};
@@ -801,10 +616,7 @@ export default {
         },
       });
       try {
-        const response = await axios.post(
-          "/api/v1/categorias",
-          proxy.getOriginal()
-        );
+        const response = await axios.post("/api/v1/categorias", proxy.getOriginal());
         if (response) {
           toast("Categoría guardada correctamente", {
             hideProgressBar: true,
@@ -836,10 +648,7 @@ export default {
         },
       });
       try {
-        const response = await axios.post(
-          "/api/v1/proveedores",
-          proxy.getOriginal()
-        );
+        const response = await axios.post("/api/v1/proveedores", proxy.getOriginal());
         if (response) {
           toast("Proveedor guardado correctamente", {
             hideProgressBar: true,
@@ -865,7 +674,7 @@ export default {
       this.currentProduct = { ...product };
     },
     async saveProduct() {
-      let successMessage = "";
+      let successMessage = ''
       if (this.currentProduct.idProducto) {
         successMessage = "Producto actualizado correctamente";
       } else {
@@ -873,8 +682,7 @@ export default {
       }
       try {
         const response = await axios.post(
-          "/api/v1/productos",
-          this.currentProduct
+          "/api/v1/productos", this.currentProduct
         );
         if (response) {
           toast(successMessage, {
@@ -900,9 +708,7 @@ export default {
     openProviderDetails(providerName) {
       console.log(providerName);
       console.log(this.providers);
-      const provider = this.providers.find(
-        (p) => p.nombreProveedor === providerName
-      );
+      const provider = this.providers.find((p) => p.nombreProveedor === providerName);
       if (provider) {
         this.selectedProvider = { ...provider };
       }
