@@ -16,12 +16,12 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="address in addresses" :key="address.street">
-              <td>{{ address.street }}</td>
-              <td>{{ address.neighborhood }}</td>
-              <td>{{ address.number }}</td>
-              <td>{{ address.postal_code }}</td>
-              <td>{{ address.cellphone }}</td>
+            <tr v-for="user in users" :key="user.idUsuario">
+              <td>{{ user.calle }}</td>
+              <td>{{ user.colonia }}</td>
+              <td>{{ user.numero }}</td>
+              <td>{{ user.codigoPostal }}</td>
+              <td>{{ user.telefono }}</td>
             </tr>
           </tbody>
         </table>
@@ -34,23 +34,12 @@
 export default {
   data() {
     return {
-      addresses: [
-        {
-          street: "Av. Reforma",
-          neighborhood: "Centro",
-          number: "123",
-          postal_code: "01000",
-          cellphone: "5551234567",
-        },
-        {
-          street: "Calle Falsa",
-          neighborhood: "Barrio Bajo",
-          number: "456",
-          postal_code: "02000",
-          cellphone: "5559876543",
-        },
-      ],
+      users: []
     };
+  },
+  created() {
+    this.users.push(JSON.parse(localStorage.getItem("userInfo")));
+    console.log(this.users)
   },
 };
 </script>
