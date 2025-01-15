@@ -81,7 +81,9 @@
 <script setup>
 import { ref } from "vue";
 import axios from "axios";
-
+import { toast } from 'vue3-toastify'
+import 'vue3-toastify/dist/index.css';
+import router from "@/router";
 // Estado de los campos
 const username = ref("");
 const password = ref("");
@@ -97,32 +99,31 @@ const handleSubmit = async () => {
     usernameError.value = "";
     passwordError.value = "";
 
-    // Validaciones básicas
-    if (password.value.length < 6) {
-      passwordError.value = "La contraseña debe tener al menos 6 caracteres.";
-      return;
-    }
-
     // Llamada al endpoint de login
     const response = await axios.post("/api/v1/login", {
       username: username.value,
       password: password.value,
     });
-    console.log(response);
-
     if (response) {
-      localStorage.setItem("userInfo", JSON.stringify(response));
+      localStorage.setItem("userInfo", JSON.stringify(response.data));
       localStorage.setItem("isLogged", "true");
+      let role = response.data.role.nombreRole;
+      if (role === "CLIENT") {
+        router.push({ name: 'HomeScreen'})
+      } else {
+        router.push({ name: 'ProductosAdmin'})
+      }
     }
   } catch (error) {
     if (error.response) {
-      const errorMessage =
-        error.response.data.message || "Error al iniciar sesión";
-      usernameError.value = errorMessage;
-    } else {
-      usernameError.value = "Error de conexión. Por favor, intenta más tarde.";
+      let messageError = error.response.data.message
+      toast(messageError, {
+        hideProgressBar: true,
+        autoClose: 1500,
+        type: "error",
+        theme: "colored",
+      })
     }
-    console.error("Error durante el login:", error);
   }
 };
 </script>
