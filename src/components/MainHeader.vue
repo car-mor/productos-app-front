@@ -7,20 +7,45 @@
         <ul class="nav-menu">
           <li><a href="#" class="nav-link">Inicio</a></li>
           <li><a href="#" class="nav-link">Productos</a></li>
+
+          <!-- Menú desplegable de categorías -->
+          <li class="dropdown">
+            <a href="#" class="nav-link" @click.prevent="toggleDropdown">
+              Categorías
+              <span :class="['arrow', { open: isDropdownOpen }]">↓</span>
+            </a>
+            <ul v-if="isDropdownOpen" class="dropdown-menu">
+              <li
+                v-if="categories.length === 0"
+                class="dropdown-item empty-state"
+              >
+                No hay categorías disponibles
+              </li>
+              <li
+                v-else
+                v-for="category in categories"
+                :key="category.idCategoria"
+              >
+                <a :href="'/categorias/' + category.id" class="dropdown-item">
+                  {{ category.nombreCategoria }}
+                </a>
+              </li>
+            </ul>
+          </li>
           <li><a href="#" class="nav-link">Contacto</a></li>
         </ul>
       </nav>
 
       <div class="actions-group">
         <div class="search-bar" v-if="isSearchBarEnabled">
-  <input 
-    type="text" 
-    placeholder="Buscar electrodomésticos..." 
-    v-model="searchQuery" 
-    :disabled="!isSearchBarEnabled" />
-  <SearchIcon class="search-icon" />
-</div>
-
+          <input
+            type="text"
+            placeholder="Buscar electrodomésticos..."
+            v-model="searchQuery"
+            :disabled="!isSearchBarEnabled"
+          />
+          <SearchIcon class="search-icon" />
+        </div>
 
         <!-- UserIcon con menú condicional -->
         <div class="user-actions">
@@ -29,13 +54,22 @@
           </div>
           <ul v-if="isUserMenuOpen" class="dropdown-menu">
             <li v-if="isLogged">
-              <router-link to="/perfil-usuario" class="dropdown-item">Mi Perfil</router-link>
+              <router-link to="/perfil-usuario" class="dropdown-item"
+                >Mi Perfil</router-link
+              >
             </li>
             <li v-if="isLogged">
-              <router-link to="/perfil-usuario" class="dropdown-item "@click="logout">Cerrar Sesión</router-link>
+              <router-link
+                to="/perfil-usuario"
+                class="dropdown-item"
+                @click="logout"
+                >Cerrar Sesión</router-link
+              >
             </li>
             <li v-else>
-              <router-link to="/inicio-sesion" class="dropdown-item">Iniciar Sesión</router-link>
+              <router-link to="/inicio-sesion" class="dropdown-item"
+                >Iniciar Sesión</router-link
+              >
             </li>
           </ul>
           <RouterLink to="/carrito-compras">
@@ -50,54 +84,23 @@
   </header>
 </template>
 
-
 <script setup>
 import { ref, onMounted } from "vue";
 import { SearchIcon, ShoppingCartIcon, UserIcon } from "lucide-vue-next";
 import axios from "axios";
-import { useRoute } from "vue-router";
-import { computed } from "vue";
 
-// Estado para verificar si la barra de búsqueda debe estar activa
-const route = useRoute();
-const isSearchBarEnabled = computed(() => route.name == "HomeScreen");
-
-// Barra de búsqueda
-const searchQuery = ref("");
-
-// Contador de elementos en el carrito
-const cartItemsCount = ref(0);
-
-// Estado del menú del usuario
-const isUserMenuOpen = ref(false);
-
-// Estado de inicio de sesión
-const isLogged = ref(false); // Cambia esto según el estado de autenticación real
-
-// Alternar el menú del usuario
-const toggleUserMenu = () => {
-  isUserMenuOpen.value = !isUserMenuOpen.value;
-};
-
-// Función para cerrar sesión
-const logout = () => {
-  isLogged.value = false;
-  // Aquí puedes añadir lógica adicional para cerrar sesión, como eliminar tokens
-  console.log("Sesión cerrada");
-};
-
-
-// Para cargar categorías desde el backend
-const isDropdownOpen = ref(false);
-const categories = ref([]);
-
+let searchQuery = ref("");
+let cartItemsCount = ref(0);
+let isDropdownOpen = ref(false);
+let categories = ref([]);
 const toggleDropdown = () => {
   isDropdownOpen.value = !isDropdownOpen.value;
+  console.log("Estado del dropdown:", isDropdownOpen.value);
 };
 
 const fetchCategories = async () => {
   try {
-    const response = await axios.get("/api/categorias");
+    const response = await axios.get("/api/v1/categorias");
     categories.value = response.data;
   } catch (error) {
     console.error("Error al cargar las categorías:", error);
@@ -109,7 +112,6 @@ onMounted(() => {
   fetchCategories();
 });
 </script>
-
 
 <style scoped>
 /* Estilos principales del header */

@@ -8,13 +8,13 @@
       <nav>
         <ul class="nav-menu">
           <li>
-            <router-link to="/" class="w-100 mt-4">
-              <a class="nav-link">Inicio</a>
+            <router-link to="/" class="w-100 nav-link">
+              Inicio
             </router-link>
           </li>
           <li>
-            <router-link to="/producto-cliente" class="w-100 mt-4">
-              <a class="nav-link">Productos</a>
+            <router-link to="/producto-cliente" class="nav-link w-100">
+              Productos
             </router-link>
           </li>
           <li><a href="#" class="nav-link">Ofertas</a></li>
@@ -162,9 +162,14 @@ const toggleContactModal = () => {
 
 .nav-link {
   text-decoration: none;
-  color: #4b5563;
+  color: #4b5563; 
   font-weight: 500;
   transition: color 0.3s ease;
+}
+
+.nav-link:hover, 
+.nav-link:focus {
+  color: #1f2937; /* Cambia el color al pasar el mouse o enfocar */
 }
 
 .nav-link:hover {

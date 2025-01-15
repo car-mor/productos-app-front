@@ -12,23 +12,23 @@
           >
             <div class="card h-100">
               <img
-                :src="product.image"
+                :src="product.imagenUrl"
                 class="card-img-top"
                 style="height: 200px; object-fit: cover"
-                :alt="product.name"
+                :alt="product.nombreProducto"
               />
               <div class="card-body">
                 <h5 class="card-title">{{ product.name }}</h5>
                 <p class="card-text">
-                  <span class="fw-bold">Proveedor:</span> {{ product.supplier }}
+                  <span class="fw-bold">Proveedor:</span> {{ product.proveedor.nombreProveedor }}
                 </p>
                 <p class="card-text">
                   <span class="fs-4 text-primary fw-bold"
-                    >${{ product.price.toLocaleString() }}</span
+                    >${{ product.precioUnitario.toLocaleString() }}</span
                   >
                 </p>
-                <button class="btn btn-primary w-100">
-                  Agregar al carrito
+                <button class="btn btn-primary w-100" @click="sendToCart(product)">
+                  Detalle
                 </button>
               </div>
             </div>
@@ -40,60 +40,43 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import MainHeader from "@/components/MainHeader.vue";
+import { toast } from 'vue3-toastify'
+import axios from 'axios';
+import { useRouter } from 'vue-router';
 
-const products = ref([
-  {
-    name: "Refrigerador",
-    price: 12000.99,
-    supplier: "Samsung",
-    image:
-      "https://www.cityclub.com.mx/dw/image/v2/BGBD_PRD/on/demandware.static/-/Sites-soriana-grocery-master-catalog/default/dwa4f29c65/images/product/8806090742965_D.jpg?sw=1000&sh=1000&sm=fit",
-  },
-  {
-    name: "Televisor LED",
-    price: 8500.5,
-    supplier: "LG",
-    image:
-      "https://i5.walmartimages.com/asr/39375d22-104a-41f9-b554-329186699894.14f57b6742ee947ee678157620513c23.jpeg?odnHeight=612&odnWidth=612&odnBg=FFFFFF",
-  },
-  {
-    name: "Licuadora",
-    price: 1500.99,
-    supplier: "Oster",
-    image:
-      "https://ostermx.vtexassets.com/arquivos/ids/161140-800-auto?v=638131135285000000&width=800&height=auto&aspect=true",
-  },
-  {
-    name: "Lavadora",
-    price: 9500.0,
-    supplier: "Whirlpool",
-    image:
-      "https://www.mueblesamerica.mx/img/1024/1024/resize/L/G/LG_01440_x1_1.jpg",
-  },
-  {
-    name: "Lavadora",
-    price: 9500.0,
-    supplier: "Whirlpool",
-    image:
-      "https://www.mueblesamerica.mx/img/1024/1024/resize/L/G/LG_01440_x1_1.jpg",
-  },
-  {
-    name: "Lavadora",
-    price: 9500.0,
-    supplier: "Whirlpool",
-    image:
-      "https://www.mueblesamerica.mx/img/1024/1024/resize/L/G/LG_01440_x1_1.jpg",
-  },
-  {
-    name: "Lavadora",
-    price: 9500.0,
-    supplier: "Whirlpool",
-    image:
-      "https://www.mueblesamerica.mx/img/1024/1024/resize/L/G/LG_01440_x1_1.jpg",
-  },
-]);
+const products = ref([]); 
+const router = useRouter()
+
+const fetchProducts = async ()  => {
+  try {
+    const response = await axios.get('/api/v1/productos')
+    products.value = response.data
+  } catch (error) {
+    if (error.response) {
+      let messageError = error.response.data.message
+      toast(messageError, {
+        hideProgressBar: true,
+        autoClose: 1500,
+        type: "error",
+        theme: "colored",
+      })
+    }
+  }
+}
+
+const sendToCart = async(product) => {
+  router.push({
+    name: 'ProductoCliente',
+    query: { id: product.idProducto }
+  })
+}
+
+onMounted(() => {
+  fetchProducts();
+});
+
 </script>
 
 <style scoped>
@@ -117,5 +100,17 @@ const products = ref([
 
 .btn-primary {
   margin-top: auto;
+  border: 1px solid #2563eb;
+  background-color: transparent;
+  color: #2563eb; 
+  padding: 10px 20px; 
+  font-weight: 500; 
+  border-radius: 5px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: #2563eb;
+  color: #ffffff;
 }
 </style>
