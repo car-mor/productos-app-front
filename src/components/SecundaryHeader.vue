@@ -51,9 +51,9 @@
 
   <!-- Modal de contacto convertido en dropdown debajo del enlace -->
   <div 
-  v-if="showContactModal" 
-  class="contact-dropdown mt-3 shadow-lg border-0 p-4 w-50"
->
+      v-if="showContactModal" 
+      class="contact-dropdown mt-3 shadow-lg border-0 p-4 w-50"
+    >
   <div class="modal-header bg-primary text-white border-0 rounded-top position-relative p-2">
     <h5 class="modal-title d-flex align-items-center fw-bold mb-0">
       <i class="bi bi-people-fill me-2"></i>
@@ -99,7 +99,6 @@
   <div class="modal-footer bg-light">
   </div>
 </div>
-
 </template>
 
 <script setup>
@@ -169,7 +168,7 @@ const toggleContactModal = () => {
 
 .nav-link:hover, 
 .nav-link:focus {
-  color: #1f2937; /* Cambia el color al pasar el mouse o enfocar */
+  color: #1f2937;
 }
 
 .nav-link:hover {
@@ -182,7 +181,6 @@ const toggleContactModal = () => {
   gap: 1.5rem;
 }
 
-/* Botones de usuario y carrito */
 .user-actions {
   display: flex;
   gap: 1rem;
@@ -221,19 +219,16 @@ const toggleContactModal = () => {
   justify-content: center;
 }
 
-/* Dropdown del modal */
 .contact-dropdown {
   position: absolute;
-  top: 60px; /* Ajusta la distancia según el espacio */
-  right: 0; /* Cambiar 'left' a 'right' para pegarlo a la derecha */
-  width: 50%; /* Si necesitas ajustarlo al 100%, cámbialo */
+  top: 60px;
+  right: 0;
+  width: 50%;
   background-color: white;
   border-radius: 5px;
   z-index: 1000;
 }
 
-
-/* Responsive */
 @media (max-width: 768px) {
   .header-container {
     flex-wrap: wrap;
