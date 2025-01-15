@@ -312,7 +312,7 @@ const handleRegister = async () => {
 </script>
 
 <style scoped>
-/* Estilos para hacerlo responsivo */
+/* Estilos generales */
 .register-container {
   display: flex;
   justify-content: center;
@@ -347,6 +347,19 @@ const handleRegister = async () => {
   padding: 10px;
 }
 
+/* Centrado de la imagen y formulario */
+.form-title {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  text-align: center; /* Centrar el título */
+}
+
+.invalid-feedback {
+  font-size: 0.9rem;
+  color: #dc3545;
+}
+
+/* Ajustes para pantallas pequeñas */
 @media (max-width: 768px) {
   .register-container {
     flex-direction: column;
@@ -358,11 +371,7 @@ const handleRegister = async () => {
   }
 }
 
-.form-title {
-  font-size: 2rem;
-  margin-bottom: 1rem;
-}
-
+/* Botón de registro */
 .btn-outline-secondary {
   text-align: center;
 }
@@ -371,8 +380,11 @@ const handleRegister = async () => {
   width: 100%;
 }
 
-.invalid-feedback {
-  font-size: 0.9rem;
-  color: #dc3545;
+button[type="submit"] {
+  display: block;
+  margin-top: 20px;
+  width: 100%;
+  padding: 10px;
 }
+
 </style>
