@@ -13,12 +13,10 @@
             </router-link>
           </li>
           <li>
-            <router-link to="/producto-cliente" class="nav-link w-100">
+            <router-link to="/" class="nav-link w-100">
               Productos
             </router-link>
           </li>
-          <li><a href="#" class="nav-link">Ofertas</a></li>
-
           <!-- Enlace para mostrar el contenido de contacto -->
           <li>
             <a 

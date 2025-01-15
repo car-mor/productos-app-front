@@ -91,7 +91,7 @@ export default {
         }
       } catch (error) {
         if (error.response) {
-          let messageError = error.response.data.message
+          let messageError = "Código inválido"
           toast(messageError, {
             hideProgressBar: true,
             autoClose: 1500,

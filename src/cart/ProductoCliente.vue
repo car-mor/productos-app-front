@@ -175,7 +175,7 @@ export default defineComponent({
         }
       } catch (error) {
         if (error.response) {
-          let messageError = error.response.data.message
+          let messageError = 'Este producto ya está en el carrito'
           toast(messageError, {
             hideProgressBar: true,
             autoClose: 1500,

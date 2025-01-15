@@ -26,16 +26,6 @@
       </nav>
 
       <div class="actions-group">
-        <div class="search-bar" v-if="isSearchBarEnabled">
-          <input
-            type="text"
-            placeholder="Buscar productos..."
-            v-model="searchQuery"
-            :disabled="!isSearchBarEnabled"
-          />
-          <SearchIcon class="search-icon" />
-        </div>
-
         <!-- UserIcon con opción condicional -->
         <div class="actions-group">
           <div class="user-actions">
