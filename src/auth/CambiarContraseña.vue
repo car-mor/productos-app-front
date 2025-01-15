@@ -57,22 +57,63 @@
 </template>
 
 <script>
+import { toast } from 'vue3-toastify'
+import axios from 'axios';
 export default {
   data() {
     return {
       currentPassword: "",
       newPassword: "",
       confirmNewPassword: "",
+      user: {},
     };
   },
+  created() {
+    this.user = JSON.parse(localStorage.getItem("userInfo"));
+  },
   methods: {
-    submitForm() {
+    async submitForm() {
       if (this.newPassword !== this.confirmNewPassword) {
-        alert("La nueva contraseña y la confirmación no coinciden.");
-        return;
-      }
-      // Lógica para enviar los datos al backend.
-      alert("Contraseña cambiada con éxito.");
+        toast("Las contraseñas no coinciden", {
+          hideProgressBar: true,
+          autoClose: 1500,
+          type: "error",
+          theme: "colored",
+        })
+      } else {
+        const data = {
+          username: this.user.userName,
+          currentPassword: this.currentPassword,
+          newPassword: this.newPassword
+        }
+        try {
+          const response = await axios.post('/api/v1/updatePassword', data);
+          if (response) {
+            toast(response.data, {
+              hideProgressBar: true,
+              autoClose: 600,
+              type: "success",
+              theme: "colored",
+            })
+            this.currentPassword = "";
+            this.newPassword = "";
+            this.confirmNewPassword = "";
+          }
+        } catch (error) {
+          if (error.response) {
+            console.log(error)
+            let messageError = !error.response.data.message 
+              ? error.response.data 
+              : error.response.data.message
+            toast(messageError, {
+              hideProgressBar: true,
+              autoClose: 1500,
+              type: "error",
+              theme: "colored",
+            })
+          }
+        }
+      } 
     },
   },
 };
