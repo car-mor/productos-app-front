@@ -3,7 +3,7 @@
     class="container d-flex justify-content-center align-items-center vh-100"
   >
     <div class="card p-4 shadow card-custom">
-      <h3 class="text-center mb-2">Validación de cuenta</h3>
+      <h3 class="text-center mb-2">Verifica tu cuenta</h3>
       <div class="text-center">
         <img
           src="../assets/logoElectroShop.png"

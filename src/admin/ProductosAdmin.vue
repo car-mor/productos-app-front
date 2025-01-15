@@ -164,12 +164,6 @@
                     >
                       <i class="bi bi-pencil me-1"></i>Editar
                     </button>
-                    <button 
-                      class="btn btn-sm btn-danger" 
-                      @click="confirmDelete(product)"
-                    >
-                      <i class="bi bi-trash me-1"></i>Eliminar
-                    </button>
                   </div>
                 </td>
               </tr>
@@ -710,14 +704,6 @@ export default {
           });
         }
       }
-    },
-    confirmDelete(product) {
-      if (confirm(`¿Está seguro de eliminar el producto "${product.name}"?`)) {
-        this.deleteProduct(product.id);
-      }
-    },
-    deleteProduct(id) {
-      this.products = this.products.filter((p) => p.id !== id);
     },
     openProviderDetails(providerName) {
       console.log(providerName);

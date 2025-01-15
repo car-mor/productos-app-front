@@ -35,13 +35,19 @@
       <!-- Grupo de acciones -->
       <div class="actions-group">
         <div class="user-actions">
-          <router-link to="/inicio-sesion" class="icon-button">
-            <UserIcon />
-          </router-link>
+          <RouterLink :to="isLogged ? '/perfil-usuario' : '/inicio-sesion'">
+            <button class="icon-button cart-button">
+              <UserIcon />
+              <span class="cart-text">{{ isLogged ? 'Mi Perfil' : 'Iniciar Sesión' }}</span>
+            </button>
+          </RouterLink>
+
+          <!-- Carrito -->
           <RouterLink to="/carrito-compras">
             <button class="icon-button cart-button">
               <ShoppingCartIcon />
               <span class="cart-count">{{ cartItemsCount }}</span>
+              <span class="cart-text">Mi carrito</span>
             </button>
           </RouterLink>
         </div>
@@ -102,8 +108,9 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import { ShoppingCartIcon, UserIcon } from "lucide-vue-next";
+import axios from "axios";
 
 // Datos para el carrito y contactos
 const cartItemsCount = ref(0);
@@ -115,11 +122,30 @@ const contacts = ref([
 ]);
 
 // Controlador para mostrar/ocultar el modal
+const user = JSON.parse(localStorage.getItem("userInfo"));
+const isLogged = JSON.parse(localStorage.getItem("isLogged"));
 const showContactModal = ref(false);
 
 const toggleContactModal = () => {
   showContactModal.value = !showContactModal.value;
 };
+
+const fetchCartItemsCount = async () => {
+  try {
+    const response = await axios.get("/api/v1/cart/count-items/", {
+      params: { idCarrito: user.carrito.idCarrito }
+    });
+    cartItemsCount.value = response.data;
+  } catch (error) {
+    console.error("Error al contar los items del carrito:", error);
+    cartItemsCount.value = 0;
+  }
+};
+
+onMounted(() => {
+  fetchCartItemsCount();
+});
+
 </script>
 
 <style scoped>

@@ -62,7 +62,9 @@ export default {
   },
   methods: {
     logout() {
-      console.log("Cerrar sesión");
+      localStorage.removeItem('userInfo');
+      localStorage.removeItem('isLogged');
+      this.$router.push({name: 'InicioSesion'})
     },
     formatAddres()  {
       if (!this.user || !this.user.calle || !this.user.colonia || !this.user.numero || !this.user.codigoPostal) {
