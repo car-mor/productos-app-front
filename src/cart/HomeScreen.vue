@@ -60,7 +60,7 @@ const router = useRouter()
 
 const fetchProducts = async ()  => {
   try {
-    const response = await axios.get('/api/v1/productos')
+    const response = await axios.get('/api/v1/productos/activos')
     products.value = response.data
   } catch (error) {
     if (error.response) {

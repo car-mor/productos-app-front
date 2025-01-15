@@ -108,12 +108,17 @@ const handleSubmit = async () => {
       localStorage.setItem("userInfo", JSON.stringify(response.data));
       localStorage.setItem("isLogged", "true");
       let role = response.data.role.nombreRole;
-      if (role === "CLIENT") {
-        router.push({ name: 'HomeScreen'})
+      console.log(response.data.isVerified)
+      if (response.data.isVerified) {
+        if (role === "CLIENT") {
+          router.push({ name: 'HomeScreen'})
+        } else {
+          router.push({ name: 'PerfilAdminitrador'})
+        }
       } else {
-        router.push({ name: 'ProductosAdmin'})
+        sendToken(response.data.email)
       }
-    }
+    }   
   } catch (error) {
     if (error.response) {
       let messageError = error.response.data.message
@@ -126,6 +131,40 @@ const handleSubmit = async () => {
     }
   }
 };
+
+const sendToken = async (email) =>{
+  console.log(email)
+  try {
+    const response = await axios.get('/api/v1/send-token', {
+      params: { email },
+    });
+    if (response) {
+      toast("Verifica tu cuenta", {
+        hideProgressBar: true,
+        autoClose: 1500,
+        type: "warning",
+        theme: "colored",
+        onClose: () => {
+          router.push({
+            name: 'Autenticacion',
+            query: { email }
+          })
+        },
+      })
+    }
+  } catch (error) {
+    if (error.response) {
+      let messageError = error.response.data.message
+      toast(messageError, {
+        hideProgressBar: true,
+        autoClose: 1500,
+        type: "error",
+        theme: "colored",
+      })
+    }
+  }
+}
+
 </script>
 
 <style scoped>

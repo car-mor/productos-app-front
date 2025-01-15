@@ -127,20 +127,15 @@
                 </span>
               </div>
             </td>
-            <td class="align-middle">
-              <div class="btn-group">
-                <button
-                  class="btn btn-warning btn-sm"
-                  data-bs-toggle="modal"
-                  data-bs-target="#productModal"
-                  @click="openEditProductModal(product)"
-                >
-                  <i class="bi bi-pencil me-1"></i>Editar
-                </button>
-                <button class="btn btn-danger btn-sm" @click="confirmDelete(product)">
-                  <i class="bi bi-trash me-1"></i>Eliminar
-                </button>
-              </div>
+            <td class="align-middle text-center">
+              <button
+                class="btn btn-warning btn-sm"
+                data-bs-toggle="modal"
+                data-bs-target="#productModal"
+                @click="openEditProductModal(product)"
+              >
+                <i class="bi bi-pencil me-1"></i>Editar
+              </button>
             </td>
           </tr>
         </tbody>
@@ -674,14 +669,6 @@ export default {
           });
         }
       }
-    },
-    confirmDelete(product) {
-      if (confirm(`¿Está seguro de eliminar el producto "${product.name}"?`)) {
-        this.deleteProduct(product.id);
-      }
-    },
-    deleteProduct(id) {
-      this.products = this.products.filter((p) => p.id !== id);
     },
     openProviderDetails(providerName) {
       console.log(providerName);
