@@ -190,7 +190,17 @@
       </template>
       <template v-else>
         <div class="text-center py-5">
-          <p>Cargando...</p>
+          <h3>Tu carrito está vacío...</h3>
+          <div class="text-center">
+            <img src="../assets/carritovacio.png" alt="Seguridad" style="max-width: 300px;" />
+          </div>
+          <p class="text-muted">¡Realiza tu primer pedido!</p>
+          <router-link
+            to="/home-screen"
+            class="btn btn-primary w-50 mt-3"
+          >
+            Buscar productos
+          </router-link>
         </div>
       </template>
     </div>

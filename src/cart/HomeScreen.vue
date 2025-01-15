@@ -8,7 +8,7 @@
           <h3>No hay productos disponibles</h3>
           <div class="text-center">
             <img src="../assets/pctriste.png" alt="Seguridad" style="max-width: 300px;" />
-        </div>
+          </div>
           <p class="text-muted">Por favor, verifica más tarde.</p>
         </div>
         <div v-else class="row g-4">
